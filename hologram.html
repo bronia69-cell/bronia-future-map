@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ההולוגרמה המרחבית שלי</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&display=swap');
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #04020f;
+  --gold: #d4af37;
+  --gold-light: #ffe88a;
+  --purple: #a855f7;
+  --purple-light: #c084fc;
+  --pink: #f9a8d4;
+  --text: #f0e6ff;
+  --text-soft: rgba(233,213,255,0.75);
+  --text-dim: rgba(216,180,254,0.45);
+  --card: rgba(20,8,45,0.92);
+  --border: rgba(192,132,252,0.2);
+}
+
+html, body {
+  height: 100%; width: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  font-family: 'Heebo', 'Arial Hebrew', Arial, sans-serif;
+  color: var(--text);
+  direction: rtl;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* ===== STAR BG ===== */
+#stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+
+/* ===== SCREENS ===== */
+.screen {
+  position: fixed; inset: 0; z-index: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.5s ease;
+  padding: 30px 24px;
+  text-align: center;
+}
+.screen.active { opacity: 1; pointer-events: auto; }
+
+/* ===== INTRO ===== */
+#intro { background: radial-gradient(ellipse at 50% 35%, rgba(80,20,140,0.2), transparent 65%); }
+.intro-orb {
+  width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 28px;
+  background: radial-gradient(circle at 35% 35%, #e9d5ff, #a855f7 45%, #2d0a6e);
+  box-shadow: 0 0 35px rgba(168,85,247,0.8), 0 0 70px rgba(168,85,247,0.35);
+  animation: breathe 3.5s ease-in-out infinite;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+}
+.intro-title { font-size: 28px; font-weight: 900; color: var(--gold-light); margin-bottom: 10px; line-height: 1.3; text-shadow: 0 0 30px rgba(212,175,55,0.4); }
+.intro-sub { font-size: 15px; color: var(--text-soft); line-height: 1.75; margin-bottom: 36px; max-width: 290px; }
+.intro-note { font-size: 13px; color: var(--text-dim); margin-top: 16px; max-width: 280px; line-height: 1.6; }
+
+/* ===== CANVAS SCREEN ===== */
+#canvas-screen {
+  position: fixed; inset: 0; z-index: 1;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.5s ease;
+  display: flex; flex-direction: column;
+  padding: 0;
+}
+#canvas-screen.active { opacity: 1; pointer-events: auto; }
+
+.canvas-header {
+  position: absolute; top: 0; left: 0; right: 0;
+  padding: 14px 18px 10px;
+  background: linear-gradient(to bottom, rgba(4,2,15,0.95), transparent);
+  z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.canvas-title { font-size: 16px; font-weight: 800; color: var(--gold-light); }
+.canvas-hint { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+#map {
+  position: absolute; inset: 0;
+  touch-action: none;
+  overflow: hidden;
+}
+
+/* ===== CENTER SELF ===== */
+.self-node {
+  position: absolute;
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #f0e6ff, #a855f7 50%, #3b0764);
+  box-shadow: 0 0 25px rgba(168,85,247,0.9), 0 0 55px rgba(168,85,247,0.4), 0 0 90px rgba(212,175,55,0.15);
+  animation: breathe-self 3s ease-in-out infinite;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; font-weight: 900; color: var(--gold-light);
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* ===== REPRESENTATION NODE ===== */
+.rep-node {
+  position: absolute;
+  min-width: 70px; max-width: 110px;
+  padding: 9px 12px;
+  border-radius: 50px;
+  background: rgba(20,8,45,0.88);
+  border: 1.5px solid rgba(192,132,252,0.35);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  cursor: grab;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+  white-space: nowrap;
+  box-shadow: 0 0 12px rgba(168,85,247,0.25);
+  transition: box-shadow 0.2s, border-color 0.2s;
+  line-height: 1.3;
+  backdrop-filter: blur(8px);
+}
+.rep-node:active { cursor: grabbing; }
+.rep-node.energized {
+  border-color: var(--gold);
+  box-shadow: 0 0 20px rgba(212,175,55,0.6), 0 0 40px rgba(212,175,55,0.25);
+  color: var(--gold-light);
+  background: rgba(40,20,5,0.88);
+}
+.rep-node.selected {
+  border-color: var(--purple-light);
+  box-shadow: 0 0 22px rgba(168,85,247,0.7);
+}
+
+/* Energy ray canvas */
+#ray-canvas {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ===== BOTTOM TOOLBAR ===== */
+.toolbar {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 12px 16px max(14px, env(safe-area-inset-bottom));
+  background: linear-gradient(to top, rgba(4,2,15,0.97) 60%, transparent);
+  z-index: 10;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.toolbar-row { display: flex; gap: 8px; }
+.tool-btn {
+  flex: 1; padding: 12px 10px;
+  background: rgba(168,85,247,0.12);
+  border: 1px solid rgba(168,85,247,0.3);
+  border-radius: 50px;
+  color: var(--purple-light);
+  font-family: inherit; font-size: 14px; font-weight: 700;
+  cursor: pointer; text-align: center;
+  transition: background 0.2s;
+}
+.tool-btn:active { background: rgba(168,85,247,0.28); }
+.tool-btn.gold {
+  background: rgba(212,175,55,0.15);
+  border-color: rgba(212,175,55,0.4);
+  color: var(--gold-light);
+}
+.tool-btn.gold:active { background: rgba(212,175,55,0.3); }
+.tool-btn-energy {
+  background: linear-gradient(135deg, rgba(212,175,55,0.2), rgba(168,85,247,0.2));
+  border-color: rgba(212,175,55,0.5);
+  color: var(--gold-light);
+  font-size: 13px;
+}
+.energy-hint { font-size: 11px; color: var(--text-dim); text-align: center; }
+
+/* ===== MODAL (add representation) ===== */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 50;
+  background: rgba(4,2,15,0.85);
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s;
+  backdrop-filter: blur(6px);
+}
+.modal-overlay.open { opacity: 1; pointer-events: auto; }
+.modal-box {
+  width: 100%; max-width: 480px;
+  background: linear-gradient(135deg, #130528, #1e0a40);
+  border: 1px solid var(--border);
+  border-radius: 28px 28px 0 0;
+  padding: 28px 24px max(24px, env(safe-area-inset-bottom));
+  transform: translateY(40px);
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+.modal-overlay.open .modal-box { transform: translateY(0); }
+.modal-label { font-size: 18px; font-weight: 800; color: var(--gold-light); margin-bottom: 16px; }
+.modal-input {
+  width: 100%; padding: 15px 18px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(192,132,252,0.3);
+  border-radius: 16px;
+  color: var(--text); font-family: inherit; font-size: 17px;
+  direction: rtl; outline: none; margin-bottom: 16px;
+}
+.modal-input:focus { border-color: rgba(168,85,247,0.6); }
+.modal-input::placeholder { color: var(--text-dim); }
+.modal-btns { display: flex; gap: 10px; }
+.modal-cancel {
+  flex: 1; padding: 14px;
+  background: none; border: 1px solid var(--border);
+  border-radius: 50px; color: var(--text-dim);
+  font-family: inherit; font-size: 16px; cursor: pointer;
+}
+.modal-confirm {
+  flex: 2; padding: 14px;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  border: none; border-radius: 50px; color: #fff;
+  font-family: inherit; font-size: 16px; font-weight: 800; cursor: pointer;
+  box-shadow: 0 4px 18px rgba(124,58,237,0.5);
+}
+
+/* ===== CTA SCREEN ===== */
+#cta-screen {
+  background: radial-gradient(ellipse at 50% 30%, rgba(80,20,140,0.2), transparent 65%);
+  overflow-y: auto; justify-content: flex-start; padding-top: 50px;
+}
+.cta-msg {
+  font-size: 20px; font-weight: 800; color: var(--gold-light);
+  line-height: 1.5; margin-bottom: 10px; max-width: 290px;
+}
+.cta-sub { font-size: 15px; color: var(--text-soft); line-height: 1.7; margin-bottom: 36px; max-width: 290px; }
+.cta-btn {
+  display: block; width: 100%; max-width: 300px;
+  padding: 17px 24px; margin: 0 auto 14px;
+  border-radius: 50px; border: none;
+  font-family: inherit; font-size: 17px; font-weight: 800;
+  cursor: pointer; text-align: center; text-decoration: none;
+  transition: transform 0.15s;
+}
+.cta-btn:active { transform: scale(0.97); }
+.cta-btn-main {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: #fff;
+  box-shadow: 0 6px 24px rgba(124,58,237,0.5);
+}
+.cta-btn-secondary {
+  background: rgba(212,175,55,0.15);
+  border: 1.5px solid rgba(212,175,55,0.5) !important;
+  color: var(--gold-light);
+}
+.cta-back { font-size: 14px; color: var(--text-dim); cursor: pointer; margin-top: 20px; text-decoration: underline; }
+
+/* ===== ANIMATIONS ===== */
+@keyframes breathe {
+  0%,100% { box-shadow: 0 0 25px rgba(168,85,247,0.8), 0 0 50px rgba(168,85,247,0.3); }
+  50% { box-shadow: 0 0 40px rgba(168,85,247,1), 0 0 80px rgba(168,85,247,0.45), 0 0 110px rgba(212,175,55,0.2); }
+}
+@keyframes breathe-self {
+  0%,100% { box-shadow: 0 0 25px rgba(168,85,247,0.9), 0 0 55px rgba(168,85,247,0.4), 0 0 90px rgba(212,175,55,0.15); transform: translate(-50%,-50%) scale(1); }
+  50% { box-shadow: 0 0 40px rgba(168,85,247,1), 0 0 80px rgba(168,85,247,0.55), 0 0 120px rgba(212,175,55,0.25); transform: translate(-50%,-50%) scale(1.05); }
+}
+@keyframes ray-pulse { 0% { opacity:0.9; } 100% { opacity:0; } }
+@keyframes node-pop { 0% { transform: translate(-50%,-50%) scale(0.3); opacity:0; } 70% { transform: translate(-50%,-50%) scale(1.12); } 100% { transform: translate(-50%,-50%) scale(1); opacity:1; } }
+
+.btn-main {
+  display: block; width: 100%; max-width: 300px;
+  padding: 17px 24px;
+  background: linear-gradient(135deg, #7c3aed, #a855f7, #c084fc);
+  border: none; border-radius: 50px;
+  color: #fff; font-family: inherit; font-size: 18px; font-weight: 800;
+  cursor: pointer; box-shadow: 0 6px 24px rgba(124,58,237,0.5);
+  transition: transform 0.15s;
+}
+.btn-main:active { transform: scale(0.97); }
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+
+<!-- ===== INTRO ===== -->
+<div id="intro" class="screen active">
+  <div class="intro-orb">✦</div>
+  <h1 class="intro-title">ההולוגרמה<br>המרחבית שלי</h1>
+  <p class="intro-sub">מפה אישית של עולמך הפנימי.<br>תציבי את היצוגים שלך, תזיזי אותם,<br>ותרגישי את השינוי.</p>
+  <button class="btn-main" onclick="startCanvas()">✦ בואי נתחיל</button>
+  <p class="intro-note">את נמצאת במרכז. כל יצוג שתוסיפי מייצג משהו משמעותי בחייך.</p>
+</div>
+
+<!-- ===== CANVAS SCREEN ===== -->
+<div id="canvas-screen">
+  <div class="canvas-header">
+    <div>
+      <div class="canvas-title">✦ ההולוגרמה שלי</div>
+      <div class="canvas-hint" id="canvas-hint">הוסיפי יצוג ראשון</div>
+    </div>
+    <button class="tool-btn" style="flex:none;padding:8px 16px;font-size:13px;" onclick="showCTA()">סיימתי ✓</button>
+  </div>
+
+  <div id="map">
+    <canvas id="ray-canvas"></canvas>
+    <div class="self-node" id="self-node">אני</div>
+  </div>
+
+  <div class="toolbar">
+    <div class="energy-hint" id="energy-hint" style="display:none">בחרי יצוג ולחצי "שלחי אנרגיה" להזרמת אור</div>
+    <div class="toolbar-row">
+      <button class="tool-btn" onclick="openAddModal()">+ הוסיפי יצוג</button>
+      <button class="tool-btn tool-btn-energy" id="energy-btn" onclick="sendEnergy()" style="display:none">⚡ שלחי אנרגיה</button>
+    </div>
+    <div class="toolbar-row">
+      <button class="tool-btn" onclick="clearSelected()" style="font-size:12px;" id="deselect-btn" style="display:none">בטלי בחירה</button>
+      <button class="tool-btn" onclick="deleteSelected()" style="font-size:12px;color:rgba(248,113,113,0.8);border-color:rgba(248,113,113,0.3);" id="delete-btn">מחקי יצוג</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD MODAL ===== -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <div class="modal-label">מה היצוג הזה?</div>
+    <input class="modal-input" id="rep-input" type="text" placeholder="למשל: אמא, עבודה, חלום, פחד..." maxlength="18">
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModal()">ביטול</button>
+      <button class="modal-confirm" onclick="addRep()">הוסיפי ✦</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CTA SCREEN ===== -->
+<div id="cta-screen" class="screen">
+  <div style="font-size:48px;margin-bottom:18px;">🌸</div>
+  <p class="cta-msg">מה עלה בך<br>תוך כדי התהליך?</p>
+  <p class="cta-sub">כל הזזה שעשית היא תנועה פנימית אמיתית.<br>אם משהו התעורר בך, ברוניה כאן להעמיק איתך.</p>
+
+  <a class="cta-btn cta-btn-main" href="https://bronia-meditation.pages.dev" target="_blank">
+    ✨ האפליקציה המלאה שלי — 149 ₪ לשנה
+  </a>
+  <a class="cta-btn cta-btn-secondary" href="https://wa.me/972XXXXXXXXX" target="_blank" style="display:block;width:100%;max-width:300px;margin:0 auto 14px;">
+    💜 פגישה אישית עם ברוניה
+  </a>
+  <p class="cta-back" onclick="backToCanvas()">חזרה להולוגרמה שלי</p>
+</div>
+
+<script>
+/* ===== STARS ===== */
+const sc = document.getElementById('stars');
+const sx = sc.getContext('2d');
+let stars = [];
+function resizeStar() { sc.width = innerWidth; sc.height = innerHeight; }
+function initStars() {
+  stars = Array.from({length:100}, () => ({
+    x: Math.random()*innerWidth, y: Math.random()*innerHeight,
+    r: Math.random()*1.3+0.2, phase: Math.random()*Math.PI*2, speed: Math.random()*0.007+0.003
+  }));
+}
+function drawStars(t) {
+  sx.clearRect(0,0,sc.width,sc.height);
+  stars.forEach(s => {
+    const o = 0.2+0.6*Math.abs(Math.sin(t*s.speed+s.phase));
+    sx.beginPath(); sx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    sx.fillStyle = `rgba(255,255,255,${o})`; sx.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+resizeStar(); initStars(); requestAnimationFrame(drawStars);
+window.addEventListener('resize', ()=>{ resizeStar(); initStars(); positionSelf(); });
+
+/* ===== STATE ===== */
+const map = document.getElementById('map');
+const rayCanvas = document.getElementById('ray-canvas');
+const rayCtx = rayCanvas.getContext('2d');
+const selfNode = document.getElementById('self-node');
+let cx = 0, cy = 0; // center coords
+let reps = []; // {el, x, y, name, energized}
+let selectedRep = null;
+let dragging = null;
+let dragOffset = {x:0, y:0};
+let repCount = 0;
+
+function positionSelf() {
+  cx = map.clientWidth / 2;
+  cy = map.clientHeight / 2;
+  selfNode.style.left = cx + 'px';
+  selfNode.style.top  = cy + 'px';
+  rayCanvas.width  = map.clientWidth;
+  rayCanvas.height = map.clientHeight;
+  reps.forEach(drawRayForRep);
+}
+
+/* ===== START ===== */
+function startCanvas() {
+  document.getElementById('intro').classList.remove('active');
+  document.getElementById('canvas-screen').classList.add('active');
+  setTimeout(positionSelf, 50);
+}
+
+/* ===== ADD REP ===== */
+function openAddModal() {
+  document.getElementById('modal').classList.add('open');
+  setTimeout(()=>document.getElementById('rep-input').focus(), 350);
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.getElementById('rep-input').value = '';
+}
+document.getElementById('rep-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addRep();
+});
+
+const COLORS = [
+  'rgba(249,168,212,0.5)', 'rgba(212,175,55,0.45)', 'rgba(168,85,247,0.5)',
+  'rgba(52,211,153,0.45)', 'rgba(251,191,36,0.4)', 'rgba(192,132,252,0.5)',
+  'rgba(96,165,250,0.45)', 'rgba(248,113,113,0.4)'
+];
+
+function addRep() {
+  const name = document.getElementById('rep-input').value.trim();
+  if (!name) return;
+  closeModal();
+
+  // place at random position around center
+  const angle = Math.random() * Math.PI * 2;
+  const dist  = 80 + Math.random() * Math.min(cx, cy) * 0.5;
+  const x = cx + Math.cos(angle) * dist;
+  const y = cy + Math.sin(angle) * dist;
+
+  const color = COLORS[repCount % COLORS.length];
+  repCount++;
+
+  const el = document.createElement('div');
+  el.className = 'rep-node';
+  el.textContent = name;
+  el.style.left = x + 'px';
+  el.style.top  = y + 'px';
+  el.style.borderColor = color.replace('0.5','0.6').replace('0.45','0.55').replace('0.4','0.5');
+  el.style.boxShadow = `0 0 14px ${color}`;
+  el.style.animation = 'node-pop 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards';
+  map.appendChild(el);
+
+  const rep = {el, x, y, name, energized: false, color};
+  reps.push(rep);
+
+  // bind drag
+  bindDrag(el, rep);
+  // bind select
+  el.addEventListener('click', e => { e.stopPropagation(); selectRep(rep); });
+
+  updateHint();
+}
+
+function updateHint() {
+  const hint = document.getElementById('canvas-hint');
+  if (reps.length === 0) hint.textContent = 'הוסיפי יצוג ראשון';
+  else if (reps.length < 3) hint.textContent = 'גרגרי את היצוגים במרחב';
+  else hint.textContent = 'גרגרי, הזיזי, הרגישי...';
+}
+
+/* ===== SELECT ===== */
+function selectRep(rep) {
+  if (selectedRep) selectedRep.el.classList.remove('selected');
+  selectedRep = rep;
+  rep.el.classList.add('selected');
+  document.getElementById('energy-btn').style.display = 'block';
+  document.getElementById('delete-btn').style.display = 'block';
+  document.getElementById('energy-hint').style.display = 'block';
+}
+function clearSelected() {
+  if (selectedRep) { selectedRep.el.classList.remove('selected'); selectedRep = null; }
+  document.getElementById('energy-btn').style.display = 'none';
+  document.getElementById('energy-hint').style.display = 'none';
+}
+function deleteSelected() {
+  if (!selectedRep) return;
+  selectedRep.el.remove();
+  reps = reps.filter(r => r !== selectedRep);
+  clearRayForRep(selectedRep);
+  selectedRep = null;
+  document.getElementById('energy-btn').style.display = 'none';
+  document.getElementById('energy-hint').style.display = 'none';
+  redrawRays();
+  updateHint();
+}
+
+/* ===== DRAG ===== */
+function bindDrag(el, rep) {
+  let startX, startY, moved;
+
+  function onStart(e) {
+    e.stopPropagation();
+    moved = false;
+    const pt = e.touches ? e.touches[0] : e;
+    const rect = map.getBoundingClientRect();
+    startX = pt.clientX - rect.left - rep.x;
+    startY = pt.clientY - rect.top  - rep.y;
+    dragging = rep;
+    el.style.cursor = 'grabbing';
+    el.style.zIndex = 20;
+    el.style.transition = 'none';
+  }
+  function onMove(e) {
+    if (dragging !== rep) return;
+    e.preventDefault();
+    moved = true;
+    const pt = e.touches ? e.touches[0] : e;
+    const rect = map.getBoundingClientRect();
+    rep.x = pt.clientX - rect.left - startX;
+    rep.y = pt.clientY - rect.top  - startY;
+    el.style.left = rep.x + 'px';
+    el.style.top  = rep.y + 'px';
+    if (rep.energized) drawRayForRep(rep);
+  }
+  function onEnd(e) {
+    if (dragging !== rep) return;
+    dragging = null;
+    el.style.cursor = 'grab';
+    el.style.zIndex = 4;
+    if (!moved) return;
+    if (rep.energized) drawRayForRep(rep);
+  }
+
+  el.addEventListener('touchstart', onStart, {passive:false});
+  el.addEventListener('mousedown', onStart);
+  window.addEventListener('touchmove', onMove, {passive:false});
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('touchend', onEnd);
+  window.addEventListener('mouseup', onEnd);
+}
+
+/* ===== ENERGY RAYS ===== */
+let rayData = []; // {x1,y1,x2,y2,color,alpha,rep}
+
+function sendEnergy() {
+  if (!selectedRep) return;
+  const rep = selectedRep;
+  rep.energized = true;
+  rep.el.classList.add('energized');
+
+  // animate ray burst
+  animateRayBurst(cx, cy, rep.x, rep.y, rep.color);
+
+  // draw persistent ray
+  drawRayForRep(rep);
+
+  // pulse the node
+  rep.el.style.animation = 'none';
+  rep.el.style.transform = 'translate(-50%,-50%) scale(1.2)';
+  setTimeout(() => { rep.el.style.transform = 'translate(-50%,-50%) scale(1)'; }, 300);
+}
+
+function animateRayBurst(x1, y1, x2, y2, color) {
+  let alpha = 1;
+  const c = color.replace(/[\d.]+\)$/, '0.9)');
+  function frame() {
+    rayCtx.save();
+    rayCtx.globalAlpha = alpha;
+    rayCtx.strokeStyle = c;
+    rayCtx.lineWidth = 2.5;
+    rayCtx.shadowColor = c;
+    rayCtx.shadowBlur = 14;
+    rayCtx.beginPath();
+    rayCtx.moveTo(x1, y1);
+    // add sparkle particles along ray
+    const steps = 8;
+    for (let i = 0; i <= steps; i++) {
+      const t = i/steps;
+      const px = x1 + (x2-x1)*t + (Math.random()-0.5)*12;
+      const py = y1 + (y2-y1)*t + (Math.random()-0.5)*12;
+      if (i === 0) rayCtx.moveTo(px,py); else rayCtx.lineTo(px,py);
+    }
+    rayCtx.stroke();
+    rayCtx.restore();
+    alpha -= 0.06;
+    if (alpha > 0) requestAnimationFrame(frame);
+    else redrawRays();
+  }
+  requestAnimationFrame(frame);
+}
+
+function drawRayForRep(rep) {
+  // remove old entry
+  rayData = rayData.filter(r => r.rep !== rep);
+  if (rep.energized) {
+    rayData.push({x1:cx, y1:cy, x2:rep.x, y2:rep.y, color:rep.color, rep});
+  }
+  redrawRays();
+}
+function clearRayForRep(rep) {
+  rayData = rayData.filter(r => r.rep !== rep);
+  redrawRays();
+}
+function redrawRays() {
+  rayCtx.clearRect(0,0,rayCanvas.width,rayCanvas.height);
+  rayData.forEach(r => {
+    const grad = rayCtx.createLinearGradient(r.x1, r.y1, r.x2, r.y2);
+    grad.addColorStop(0, r.color.replace(/[\d.]+\)$/, '0.8)'));
+    grad.addColorStop(1, r.color.replace(/[\d.]+\)$/, '0.15)'));
+    rayCtx.beginPath();
+    rayCtx.moveTo(r.x1, r.y1);
+    rayCtx.lineTo(r.x2, r.y2);
+    rayCtx.strokeStyle = grad;
+    rayCtx.lineWidth = 1.5;
+    rayCtx.shadowColor = r.color;
+    rayCtx.shadowBlur = 8;
+    rayCtx.stroke();
+  });
+}
+
+/* ===== CTA ===== */
+function showCTA() {
+  document.getElementById('canvas-screen').classList.remove('active');
+  document.getElementById('cta-screen').classList.add('active');
+}
+function backToCanvas() {
+  document.getElementById('cta-screen').classList.remove('active');
+  document.getElementById('canvas-screen').classList.add('active');
+}
+
+/* ===== dismiss modal on bg click ===== */
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
+</body>
+</html>

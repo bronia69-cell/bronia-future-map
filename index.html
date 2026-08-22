@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>מפת העולם העתידי שלך</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #04020f;
+  --bg2: #08041a;
+  --card: rgba(30, 10, 60, 0.88);
+  --gold: #d4af37;
+  --gold-light: #ffe88a;
+  --purple: #a855f7;
+  --purple-light: #c084fc;
+  --pink: #f9a8d4;
+  --pink-glow: rgba(249,168,212,0.25);
+  --text: #f0e6ff;
+  --text-soft: rgba(233,213,255,0.75);
+  --text-dim: rgba(216,180,254,0.45);
+  --border: rgba(192,132,252,0.2);
+  --glow-purple: rgba(168,85,247,0.35);
+  --glow-gold: rgba(212,175,55,0.4);
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  font-family: 'Heebo', 'Arial Hebrew', Arial, sans-serif;
+  color: var(--text);
+  direction: rtl;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+canvas#stars {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ===== SCREENS ===== */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  -webkit-overflow-scrolling: touch;
+}
+.screen.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ===== SCREEN 1: OPENING ===== */
+#s1 {
+  justify-content: center;
+  padding: 40px 24px;
+  background: radial-gradient(ellipse at 50% 30%, rgba(80,20,140,0.2) 0%, transparent 65%);
+  text-align: center;
+}
+
+.opening-portrait {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+  margin: 0 auto 28px;
+  display: block;
+  box-shadow:
+    0 0 0 3px rgba(212,175,55,0.5),
+    0 0 30px rgba(168,85,247,0.6),
+    0 0 70px rgba(168,85,247,0.25),
+    0 0 110px rgba(212,175,55,0.12);
+  animation: breathe-img 4s ease-in-out infinite;
+  filter: brightness(1.05) saturate(1.1);
+}
+@keyframes breathe-img {
+  0%,100% { box-shadow: 0 0 0 3px rgba(212,175,55,0.5), 0 0 30px rgba(168,85,247,0.6), 0 0 70px rgba(168,85,247,0.25); }
+  50%      { box-shadow: 0 0 0 4px rgba(212,175,55,0.7), 0 0 45px rgba(168,85,247,0.85), 0 0 100px rgba(168,85,247,0.35), 0 0 130px rgba(212,175,55,0.18); }
+}
+
+.opening-title {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--gold-light);
+  line-height: 1.3;
+  margin-bottom: 14px;
+  text-shadow: 0 0 30px rgba(212,175,55,0.5);
+}
+.opening-subtitle {
+  font-size: 16px;
+  color: var(--text-soft);
+  line-height: 1.7;
+  margin-bottom: 48px;
+  max-width: 280px;
+}
+
+.btn-main {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  padding: 17px 24px;
+  background: linear-gradient(135deg, #7c3aed, #a855f7, #c084fc);
+  border: none;
+  border-radius: 50px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(124,58,237,0.5), 0 0 40px rgba(168,85,247,0.2);
+  transition: transform 0.15s, box-shadow 0.15s;
+  text-align: center;
+  animation: btn-glow 3s ease-in-out infinite;
+}
+.btn-main:active { transform: scale(0.97); }
+
+.opening-note {
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  max-width: 280px;
+}
+
+/* ===== SCREEN 2: THE MAP ===== */
+#s2 {
+  padding: 20px 16px 30px;
+  align-items: center;
+}
+
+.screen-header {
+  text-align: center;
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+.screen-header h2 {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--gold-light);
+  margin-bottom: 4px;
+}
+.screen-header p {
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+.map-container {
+  position: relative;
+  width: min(340px, 92vw);
+  height: min(340px, 92vw);
+  flex-shrink: 0;
+  margin: 10px auto;
+}
+
+/* Connecting lines (SVG behind everything) */
+.map-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Central orb */
+.center-orb {
+  position: absolute;
+  width: 84px;
+  height: 84px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #f0e6ff, #a855f7 45%, #4c1d95);
+  box-shadow:
+    0 0 30px rgba(168,85,247,0.8),
+    0 0 60px rgba(168,85,247,0.4),
+    0 0 90px rgba(212,175,55,0.2);
+  animation: breathe 3.5s ease-in-out infinite;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+}
+
+/* Domain nodes */
+.domain-node {
+  position: absolute;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  z-index: 3;
+  backdrop-filter: blur(8px);
+}
+.domain-node:active { transform: scale(0.93) !important; }
+.domain-node .d-icon { font-size: 22px; line-height: 1; }
+.domain-node .d-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-soft);
+  text-align: center;
+  line-height: 1.2;
+  margin-top: 3px;
+  max-width: 62px;
+}
+
+/* Positioning: container 340x340, center 170,170, r=118 */
+/* Top (270°): x=170, y=52 → left=136, top=18 */
+.d0 { left: calc(50% + 0px - 34px); top: calc(50% - 118px - 34px); }
+/* Top-right (330°): x=272, y=111 → */
+.d1 { left: calc(50% + 102px - 34px); top: calc(50% - 59px - 34px); }
+/* Bottom-right (30°): x=272, y=229 → */
+.d2 { left: calc(50% + 102px - 34px); top: calc(50% + 59px - 34px); }
+/* Bottom (90°): x=170, y=288 → */
+.d3 { left: calc(50% + 0px - 34px); top: calc(50% + 118px - 34px); }
+/* Bottom-left (150°): x=68, y=229 → */
+.d4 { left: calc(50% - 102px - 34px); top: calc(50% + 59px - 34px); }
+/* Top-left (210°): x=68, y=111 → */
+.d5 { left: calc(50% - 102px - 34px); top: calc(50% - 59px - 34px); }
+
+.d0 { border-color: rgba(249,168,212,0.5); box-shadow: 0 0 16px rgba(249,168,212,0.3); }
+.d1 { border-color: rgba(212,175,55,0.5); box-shadow: 0 0 16px rgba(212,175,55,0.25); }
+.d2 { border-color: rgba(168,85,247,0.6); box-shadow: 0 0 16px rgba(168,85,247,0.3); }
+.d3 { border-color: rgba(52,211,153,0.5); box-shadow: 0 0 16px rgba(52,211,153,0.25); }
+.d4 { border-color: rgba(251,191,36,0.5); box-shadow: 0 0 16px rgba(251,191,36,0.25); }
+.d5 { border-color: rgba(192,132,252,0.6); box-shadow: 0 0 16px rgba(192,132,252,0.3); }
+
+.d0:hover, .d0:active { border-color: #f9a8d4; box-shadow: 0 0 28px rgba(249,168,212,0.6); }
+.d1:hover, .d1:active { border-color: #d4af37; box-shadow: 0 0 28px rgba(212,175,55,0.5); }
+.d2:hover, .d2:active { border-color: #a855f7; box-shadow: 0 0 28px rgba(168,85,247,0.6); }
+.d3:hover, .d3:active { border-color: #34d399; box-shadow: 0 0 28px rgba(52,211,153,0.5); }
+.d4:hover, .d4:active { border-color: #fbbf24; box-shadow: 0 0 28px rgba(251,191,36,0.5); }
+.d5:hover, .d5:active { border-color: #c084fc; box-shadow: 0 0 28px rgba(192,132,252,0.6); }
+
+.map-hint {
+  font-size: 13px;
+  color: var(--text-dim);
+  text-align: center;
+  margin-top: 4px;
+  animation: fade-pulse 3s ease-in-out infinite;
+}
+
+.map-bottom-btns {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  width: 100%;
+  max-width: 340px;
+}
+.btn-ghost {
+  flex: 1;
+  padding: 13px;
+  background: rgba(124,58,237,0.15);
+  border: 1px solid rgba(168,85,247,0.3);
+  border-radius: 50px;
+  color: var(--purple-light);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.2s, border-color 0.2s;
+}
+.btn-ghost:active { background: rgba(124,58,237,0.3); }
+
+/* ===== SCREEN 3: DOMAIN CARD ===== */
+#s3 {
+  padding: 24px 20px 40px;
+  justify-content: flex-start;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--purple-light);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 20px;
+  align-self: flex-start;
+}
+
+.domain-card-header {
+  text-align: center;
+  margin-bottom: 24px;
+  width: 100%;
+}
+.domain-card-icon {
+  font-size: 52px;
+  margin-bottom: 10px;
+  display: block;
+}
+.domain-card-title {
+  font-size: 24px;
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+
+.card-section {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  backdrop-filter: blur(10px);
+}
+.card-section-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+.card-section-text {
+  font-size: 16px;
+  color: var(--text);
+  line-height: 1.75;
+}
+
+.card-step {
+  background: linear-gradient(135deg, rgba(124,58,237,0.25), rgba(168,85,247,0.15));
+  border: 1px solid rgba(168,85,247,0.4);
+}
+.card-step .card-section-label { color: var(--purple-light); }
+
+/* ===== SCREEN 4: WORLD I CHOOSE ===== */
+#s4 {
+  padding: 24px 20px 40px;
+}
+
+.direction-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 100%;
+  margin: 20px 0;
+}
+.dir-chip {
+  padding: 12px 8px;
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  background: rgba(30,10,60,0.6);
+  color: var(--text-soft);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.dir-chip span { font-size: 20px; }
+.dir-chip.selected {
+  border-color: var(--gold);
+  background: linear-gradient(135deg, rgba(212,175,55,0.2), rgba(168,85,247,0.2));
+  color: var(--gold-light);
+  box-shadow: 0 0 20px rgba(212,175,55,0.3);
+}
+
+.dir-counter {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+.dir-counter span { color: var(--gold); font-weight: 800; }
+
+/* Hologram preview after selection */
+.chosen-visual {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  margin: 16px 0;
+  display: none;
+}
+.chosen-visual.visible { display: block; }
+.chosen-paths {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+.path-orb {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  animation: breathe 2.5s ease-in-out infinite;
+}
+
+/* ===== SCREEN 5: 30-DAY PATH ===== */
+#s5 {
+  padding: 24px 20px 40px;
+}
+
+.path-steps { width: 100%; margin: 20px 0; }
+.path-step {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px 18px;
+}
+.step-num {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: #fff;
+  font-weight: 900;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 14px rgba(168,85,247,0.5);
+}
+.step-content { flex: 1; }
+.step-title { font-size: 15px; font-weight: 800; margin-bottom: 4px; color: var(--gold-light); }
+.step-desc { font-size: 14px; color: var(--text-soft); line-height: 1.6; }
+.step-check {
+  width: 26px;
+  height: 26px;
+  border: 2px solid rgba(168,85,247,0.4);
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  margin-top: 2px;
+}
+.step-check.done {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  border-color: #a855f7;
+  box-shadow: 0 0 12px rgba(168,85,247,0.5);
+}
+.step-check.done::after { content: '✓'; color: #fff; font-size: 13px; font-weight: 900; }
+
+.promise-box {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid rgba(212,175,55,0.3);
+  border-radius: 20px;
+  padding: 20px;
+  margin: 6px 0 20px;
+}
+.promise-label {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+.promise-textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(192,132,252,0.25);
+  border-radius: 14px;
+  padding: 14px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.7;
+  resize: none;
+  min-height: 90px;
+  direction: rtl;
+  outline: none;
+}
+.promise-textarea::placeholder { color: var(--text-dim); }
+.promise-textarea:focus { border-color: rgba(168,85,247,0.5); }
+
+/* ===== SCREEN 6: AUDIO + CLOSING ===== */
+#s6 {
+  padding: 30px 20px 50px;
+  justify-content: flex-start;
+}
+
+.audio-card {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 24px 20px;
+  text-align: center;
+  margin: 20px 0;
+}
+.audio-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--gold-light);
+  margin-bottom: 8px;
+}
+.audio-desc {
+  font-size: 14px;
+  color: var(--text-soft);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+.audio-player {
+  background: rgba(124,58,237,0.2);
+  border: 1px solid rgba(168,85,247,0.3);
+  border-radius: 50px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.audio-play-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 16px rgba(168,85,247,0.5);
+  transition: transform 0.15s;
+}
+.audio-play-btn:active { transform: scale(0.93); }
+.audio-waves {
+  flex: 1;
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  height: 30px;
+}
+.wave-bar {
+  flex: 1;
+  border-radius: 4px;
+  background: rgba(192,132,252,0.35);
+}
+.audio-note {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 12px;
+  font-style: italic;
+}
+
+.closing-card {
+  width: 100%;
+  text-align: center;
+  padding: 24px;
+  background: linear-gradient(135deg, rgba(80,20,160,0.4), rgba(212,175,55,0.1));
+  border: 1px solid rgba(212,175,55,0.2);
+  border-radius: 24px;
+  margin-top: 10px;
+}
+.closing-icon { font-size: 44px; margin-bottom: 14px; display: block; }
+.closing-text {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--text-soft);
+  line-height: 1.8;
+}
+.closing-text em { color: var(--gold-light); font-style: normal; font-weight: 800; }
+
+/* ===== NAV BAR ===== */
+.nav-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(8, 4, 24, 0.92);
+  border-top: 1px solid rgba(192,132,252,0.15);
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0 max(10px, env(safe-area-inset-bottom));
+  z-index: 100;
+  backdrop-filter: blur(16px);
+}
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: 10px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 12px;
+  transition: color 0.2s;
+}
+.nav-item .ni { font-size: 20px; }
+.nav-item.active { color: var(--purple-light); }
+.nav-item.active .ni-dot {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--purple-light);
+  margin: 0 auto;
+}
+.ni-dot { display: none; }
+
+/* ===== ANIMATIONS ===== */
+@keyframes breathe {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(168,85,247,0.7), 0 0 60px rgba(168,85,247,0.3); }
+  50% { transform: scale(1.06); box-shadow: 0 0 45px rgba(168,85,247,0.9), 0 0 90px rgba(168,85,247,0.4), 0 0 120px rgba(212,175,55,0.2); }
+}
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+@keyframes btn-glow {
+  0%, 100% { box-shadow: 0 6px 24px rgba(124,58,237,0.5), 0 0 40px rgba(168,85,247,0.2); }
+  50% { box-shadow: 0 8px 32px rgba(124,58,237,0.7), 0 0 60px rgba(168,85,247,0.35); }
+}
+@keyframes fade-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+@keyframes wave {
+  0%, 100% { height: 4px; }
+  50% { height: 24px; }
+}
+
+.screen { padding-bottom: 80px; }
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+
+<div class="app">
+
+<!-- ===== SCREEN 1: OPENING ===== -->
+<div id="s1" class="screen active">
+  <img class="opening-portrait" src="https://bronia-meditation.pages.dev/harp-bronia-sm.jpg" alt="ברוניה">
+  <h1 class="opening-title">מפת העולם<br>העתידי שלך</h1>
+  <p class="opening-subtitle">מרחב אישי לדיוק, התבוננות ובניית נתיב חדש עבורך</p>
+  <button class="btn-main" onclick="goTo('s2')">✨ אני מוכנה לגלות</button>
+  <p class="opening-note">כל מה שמופיע כאן שייך לך בלבד. זהו מרחב פרטי ואישי.</p>
+</div>
+
+<!-- ===== SCREEN 2: THE MAP ===== -->
+<div id="s2" class="screen">
+  <div class="screen-header">
+    <h2>המפה שלי ✦</h2>
+    <p>לחצי על תחום לגילוי</p>
+  </div>
+
+  <div class="map-container">
+    <svg class="map-lines" viewBox="0 0 340 340" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="lineGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="rgba(168,85,247,0.6)"/>
+          <stop offset="100%" stop-color="rgba(168,85,247,0)"/>
+        </radialGradient>
+      </defs>
+      <!-- Lines from center to each node center -->
+      <line x1="170" y1="170" x2="170" y2="52" stroke="rgba(249,168,212,0.25)" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="170" y1="170" x2="272" y2="111" stroke="rgba(212,175,55,0.2)" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="170" y1="170" x2="272" y2="229" stroke="rgba(168,85,247,0.25)" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="170" y1="170" x2="170" y2="288" stroke="rgba(52,211,153,0.2)" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="170" y1="170" x2="68" y2="229" stroke="rgba(251,191,36,0.2)" stroke-width="1" stroke-dasharray="4 4"/>
+      <line x1="170" y1="170" x2="68" y2="111" stroke="rgba(192,132,252,0.25)" stroke-width="1" stroke-dasharray="4 4"/>
+    </svg>
+
+    <div class="center-orb">✦</div>
+
+    <div class="domain-node d0" onclick="openDomain(0)">
+      <span class="d-icon">🌟</span>
+      <span class="d-label">חלומות ויצירה</span>
+    </div>
+    <div class="domain-node d1" onclick="openDomain(1)">
+      <span class="d-icon">💫</span>
+      <span class="d-label">שפע ועשייה</span>
+    </div>
+    <div class="domain-node d2" onclick="openDomain(2)">
+      <span class="d-icon">💜</span>
+      <span class="d-label">אהבה ויחסים</span>
+    </div>
+    <div class="domain-node d3" onclick="openDomain(3)">
+      <span class="d-icon">🌿</span>
+      <span class="d-label">בריאות ואיזון</span>
+    </div>
+    <div class="domain-node d4" onclick="openDomain(4)">
+      <span class="d-icon">🏡</span>
+      <span class="d-label">בית ומשפחה</span>
+    </div>
+    <div class="domain-node d5" onclick="openDomain(5)">
+      <span class="d-icon">✨</span>
+      <span class="d-label">אני והזהות</span>
+    </div>
+  </div>
+
+  <p class="map-hint">← גלגלי בין התחומים →</p>
+
+  <div class="map-bottom-btns">
+    <button class="btn-ghost" onclick="goTo('s4')">🌈 העולם שאני בוחרת</button>
+    <button class="btn-ghost" onclick="goTo('s5')">🗓 נתיב 30 ימים</button>
+  </div>
+</div>
+
+<!-- ===== SCREEN 3: DOMAIN CARD ===== -->
+<div id="s3" class="screen">
+  <button class="back-btn" onclick="goTo('s2')">← חזרה למפה</button>
+  <div class="domain-card-header">
+    <span class="domain-card-icon" id="dc-icon">🌟</span>
+    <h2 class="domain-card-title" id="dc-title">חלומות, ייעוד ויצירה</h2>
+  </div>
+  <div class="card-section">
+    <div class="card-section-label">מה קיים עכשיו</div>
+    <div class="card-section-text" id="dc-now"></div>
+  </div>
+  <div class="card-section">
+    <div class="card-section-label">מה מבקש להשתנות</div>
+    <div class="card-section-text" id="dc-change"></div>
+  </div>
+  <div class="card-section">
+    <div class="card-section-label">המסר עבורך</div>
+    <div class="card-section-text" id="dc-msg"></div>
+  </div>
+  <div class="card-section card-step">
+    <div class="card-section-label">✦ צעד קטן לימים הקרובים</div>
+    <div class="card-section-text" id="dc-step"></div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 4: WORLD I CHOOSE ===== -->
+<div id="s4" class="screen">
+  <button class="back-btn" onclick="goTo('s2')">← חזרה למפה</button>
+  <div class="screen-header">
+    <h2>מפת העולם שאני בוחרת ליצור</h2>
+  </div>
+  <p class="dir-counter">בחרי <span id="dir-count">0</span> מתוך 3 כיוונים לחיזוק</p>
+
+  <div class="direction-grid" id="dir-grid"></div>
+
+  <div class="chosen-visual" id="chosen-visual">
+    <p style="font-size:14px;color:var(--text-soft);margin-bottom:6px;">נתיבי האור שבחרת:</p>
+    <div class="chosen-paths" id="chosen-paths"></div>
+    <p style="font-size:13px;color:var(--text-dim);margin-top:14px;line-height:1.6;">
+      ההולוגרמה שלך מתעדכנת. שלושת הכיוונים האלה הם קרקע החיים שאת בוחרת לטפח.
+    </p>
+  </div>
+
+  <button class="btn-main" id="dir-btn" onclick="goTo('s5')" style="display:none;margin-top:8px;">
+    המשיכי לנתיב 30 הימים ←
+  </button>
+</div>
+
+<!-- ===== SCREEN 5: 30-DAY PATH ===== -->
+<div id="s5" class="screen">
+  <button class="back-btn" onclick="goTo('s2')">← חזרה למפה</button>
+  <div class="screen-header">
+    <h2>הנתיב שלי ל־30 הימים</h2>
+    <p>שלושה צעדים שבחרנו יחד עבורך</p>
+  </div>
+
+  <div class="path-steps">
+    <div class="path-step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">חיבור יומי לכוונה</div>
+        <div class="step-desc">כל בוקר, לפני שאת פותחת את הטלפון, שאלי את עצמך: מה דבר אחד שאת בוחרת להרגיש היום?</div>
+      </div>
+      <div class="step-check" onclick="toggleCheck(this)"></div>
+    </div>
+    <div class="path-step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">מחווה קטנה לעצמי</div>
+        <div class="step-desc">פעם בשבוע, עשי משהו אחד בלבד עבור עצמך. לא לאף אחד אחר. רק כי את ראויה לזה.</div>
+      </div>
+      <div class="step-check" onclick="toggleCheck(this)"></div>
+    </div>
+    <div class="path-step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">משפט מרפא לפני השינה</div>
+        <div class="step-desc">כתבי בנייד או ביומן משפט אחד שמתחיל ב: "אני מאמינה שאני יכולה..." ותני לו ללכת איתך לשינה.</div>
+      </div>
+      <div class="step-check" onclick="toggleCheck(this)"></div>
+    </div>
+  </div>
+
+  <div class="promise-box">
+    <div class="promise-label">💜 ההבטחה שלי לעצמי</div>
+    <textarea class="promise-textarea" placeholder="כתבי כאן את ההבטחה שאת לוקחת מהמפגש שלנו לחיים שלך..."></textarea>
+  </div>
+
+  <button class="btn-main" onclick="goTo('s6')">המסר הקולי שלי ←</button>
+</div>
+
+<!-- ===== SCREEN 6: AUDIO + CLOSING ===== -->
+<div id="s6" class="screen">
+  <div class="screen-header" style="margin-top:10px;">
+    <h2>המסר הקולי שלי</h2>
+  </div>
+
+  <div class="audio-card">
+    <div class="audio-title">🎙 הקלטה אישית מברוניה</div>
+    <div class="audio-desc">
+      הקלטה זו נוצרה עבורך כדי שתוכלי לשמוע את הכיוון שלך שוב ושוב,<br>
+      בכל רגע שתרצי לחזור למרחב הזה.
+    </div>
+    <div class="audio-player">
+      <button class="audio-play-btn" onclick="toggleAudio(this)">▶</button>
+      <div class="audio-waves" id="audio-waves">
+        <!-- bars generated by JS -->
+      </div>
+      <span style="font-size:13px;color:var(--text-dim);white-space:nowrap;">0:42</span>
+    </div>
+    <p class="audio-note">* ניתן לשלב כאן הקלטה אמיתית מברוניה בהמשך</p>
+  </div>
+
+  <div class="closing-card">
+    <span class="closing-icon">🌸</span>
+    <p class="closing-text">
+      המפה הזו נבנתה עבורך <em>באהבה</em>,<br>
+      כדי ללוות אותך בדרך שאת <em>בוחרת ליצור</em>.
+    </p>
+  </div>
+
+  <button class="btn-main" onclick="goTo('s2')" style="margin-top:24px;">חזרה למפה שלי ✦</button>
+</div>
+
+</div><!-- end app -->
+
+<!-- ===== NAV BAR ===== -->
+<nav class="nav-bar" id="nav-bar" style="display:none;">
+  <button class="nav-item active" id="nav-s2" onclick="goTo('s2')">
+    <span class="ni">🔮</span>
+    <span>המפה</span>
+    <span class="ni-dot"></span>
+  </button>
+  <button class="nav-item" id="nav-s4" onclick="goTo('s4')">
+    <span class="ni">🌈</span>
+    <span>הבחירה</span>
+    <span class="ni-dot"></span>
+  </button>
+  <button class="nav-item" id="nav-s5" onclick="goTo('s5')">
+    <span class="ni">🗓</span>
+    <span>30 ימים</span>
+    <span class="ni-dot"></span>
+  </button>
+  <button class="nav-item" id="nav-s6" onclick="goTo('s6')">
+    <span class="ni">🎙</span>
+    <span>מסר קולי</span>
+    <span class="ni-dot"></span>
+  </button>
+</nav>
+
+<script>
+/* ===== STARFIELD ===== */
+const canvas = document.getElementById('stars');
+const ctx = canvas.getContext('2d');
+let stars = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+function initStars() {
+  stars = [];
+  for (let i = 0; i < 120; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.4 + 0.2,
+      o: Math.random(),
+      speed: Math.random() * 0.008 + 0.003,
+      phase: Math.random() * Math.PI * 2
+    });
+  }
+}
+function drawStars(t) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  stars.forEach(s => {
+    const o = 0.25 + 0.55 * Math.abs(Math.sin(t * s.speed + s.phase));
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${o})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+resizeCanvas();
+initStars();
+requestAnimationFrame(drawStars);
+window.addEventListener('resize', () => { resizeCanvas(); initStars(); });
+
+/* ===== AUDIO WAVES ===== */
+const wavesEl = document.getElementById('audio-waves');
+for (let i = 0; i < 22; i++) {
+  const b = document.createElement('div');
+  b.className = 'wave-bar';
+  const h = Math.random() * 20 + 4;
+  b.style.height = h + 'px';
+  wavesEl.appendChild(b);
+}
+let audioPlaying = false;
+let waveInterval;
+function toggleAudio(btn) {
+  audioPlaying = !audioPlaying;
+  btn.textContent = audioPlaying ? '⏸' : '▶';
+  const bars = wavesEl.querySelectorAll('.wave-bar');
+  if (audioPlaying) {
+    waveInterval = setInterval(() => {
+      bars.forEach(b => {
+        const h = Math.random() * 22 + 4;
+        b.style.height = h + 'px';
+        b.style.background = `rgba(${140+Math.random()*80},${80+Math.random()*60},${220+Math.random()*35},0.7)`;
+        b.style.transition = 'height 0.12s ease';
+      });
+    }, 130);
+  } else {
+    clearInterval(waveInterval);
+    bars.forEach(b => { b.style.height = (Math.random()*18+4)+'px'; b.style.background = 'rgba(192,132,252,0.35)'; });
+  }
+}
+
+/* ===== DOMAIN DATA ===== */
+const domains = [
+  {
+    icon: '🌟', title: 'חלומות, ייעוד ויצירה', color: '#f9a8d4',
+    now: 'יש בך חלומות שעוד לא הוצאת מהמגירה. יצירתיות עצומה שמחפשת פרוק ומרחב. חלק ממך כבר יודע מה הייעוד שלך.',
+    change: 'הפחד מ"לא תצליחי" מבקש לפנות מקום לאמון. הקול הביקורתי שאומר "זה לא מציאותי" מוכן להרפות.',
+    msg: 'כל דבר שיצרת עד היום היה אימון. העכשיו הוא הרגע שהחלום מתבגר לכיוון.',
+    step: 'הקדישי 20 דקות ביום רק לדבר שמשמח אותך ליצור. בלי תוצר, בלי מטרה. רק ליצור.'
+  },
+  {
+    icon: '💫', title: 'שפע, פרנסה ועשייה', color: '#d4af37',
+    now: 'את עובדת קשה ומביאה ערך לאחרים. השפע מגיע, גם אם לפעמים הזרימה לא מרגישה אחידה.',
+    change: 'אמונה שאת ראויה לקבל כמו שאת נותנת מבקשת לחזק. יש מקום להרחיב את מה שאת מציעה לעולם.',
+    msg: 'השפע זורם לכיוון שבו יש אמון. ככל שתאמיני יותר בערך שלך, הדלתות ייפתחו בצורה שעוד לא דמיינת.',
+    step: 'כתבי שלושה דברים שאת מצוינת בהם מקצועית ואישית. שמרי אותם איפה שתראי אותם כל יום.'
+  },
+  {
+    icon: '💜', title: 'אהבה ומערכות יחסים', color: '#a855f7',
+    now: 'יש בחייך קשרים שמזינים אותך ומחברים אותך לעצמך. גם קשרים שמאתגרים אותך ומלמדים אותך עליך.',
+    change: 'גבולות בריאים מבקשים לצמוח. היכולת לקבל אהבה כמו שאת נותנת אהבה מוכנה להתרחב.',
+    msg: 'כשאת אוהבת את עצמך מהמקום האמיתי, הקשרים שלך משנים צורה. אהבה אמיתית מתחילה מבפנים.',
+    step: 'שאלי שאלה אחת אנשים קרובים שלך השבוע: "מה מחזק אותי בעיניך?" ולקחי את זה פנימה.'
+  },
+  {
+    icon: '🌿', title: 'בריאות, רוגע ואיזון', color: '#34d399',
+    now: 'גופך מדבר אלייך כל הזמן. לפעמים את שומעת אותו, לפעמים החיים עסוקים מדי. הגוף שלך זוכר כל דבר.',
+    change: 'מנוחה שאינה מרגישה כ"בזבוז זמן" מבקשת להיכנס לחייך. גוף שנח יכול לעשות יותר, לא פחות.',
+    msg: 'רוגע אינו פינוק. הוא הדלק שממנו הכל מתחיל. כשאת שלמה עם עצמך, הכל זורם יותר בקלות.',
+    step: 'בחרי דבר אחד שעושה טוב לגופך ולנפשך, ועשי אותו שלוש פעמים השבוע הקרוב בלי להצטדק.'
+  },
+  {
+    icon: '🏡', title: 'בית ומשפחה', color: '#fbbf24',
+    now: 'ביתך הוא מרחב שמחזיק אותך ואת יקיריך. יש בו חום, היסטוריה, ולפעמים גם מתחים שמבקשים הכלה.',
+    change: 'שלום פנימי בתוך הבית מבקש לצמוח. תקשורת מהלב, פחות מהעייפות, פותחת דלתות חדשות.',
+    msg: 'הבית הפנימי שלך הוא השלווה שאת נושאת בתוכך לכל מקום. כשהוא שלם, כל שאר מעגלי החיים נהנים ממנו.',
+    step: 'בחרי אדם אחד בביתך והגידי לו משהו שמודה לו על נוכחותו בחייך. בפשטות. מהלב.'
+  },
+  {
+    icon: '✨', title: 'אני והזהות שלי', color: '#c084fc',
+    now: 'יש בך כוח פנימי עצום שעוד לא קיבל את ביטויו המלא. חוכמה, חיבור לאמת, וראייה שמעבר למה שנראה לעין.',
+    change: 'סיפורים ישנים על מי שאת "אמורה" להיות מבקשים לפנות מקום לאת הבוחרת. הזמן לפגוש את עצמך מחדש.',
+    msg: 'הזהות האמיתית שלך אינה מה שעשית, ואינה מה שאחרים רואים בך. היא מה שאת בוחרת להיות עכשיו.',
+    step: 'כתבי שלושה דברים שאת אוהבת בעצמך שאחרים אולי לא רואים. קיראי אותם בקול.'
+  }
+];
+
+/* ===== DIRECTIONS ===== */
+const directions = [
+  { icon: '🌟', label: 'ביטחון' },
+  { icon: '💜', label: 'אהבה' },
+  { icon: '💫', label: 'שפע' },
+  { icon: '🌿', label: 'מנוחה' },
+  { icon: '🎨', label: 'יצירה' },
+  { icon: '🛡', label: 'גבולות' },
+  { icon: '🦋', label: 'חופש' },
+  { icon: '🔥', label: 'אומץ' },
+  { icon: '🌸', label: 'קבלה' },
+  { icon: '☀️', label: 'שמחה' },
+  { icon: '🤝', label: 'חיבור' },
+  { icon: '💚', label: 'ריפוי' }
+];
+let selectedDirs = new Set();
+
+function buildDirGrid() {
+  const grid = document.getElementById('dir-grid');
+  grid.innerHTML = '';
+  directions.forEach((d, i) => {
+    const chip = document.createElement('button');
+    chip.className = 'dir-chip' + (selectedDirs.has(i) ? ' selected' : '');
+    chip.innerHTML = `<span>${d.icon}</span>${d.label}`;
+    chip.onclick = () => toggleDir(i, chip);
+    grid.appendChild(chip);
+  });
+}
+
+function toggleDir(i, chip) {
+  if (selectedDirs.has(i)) {
+    selectedDirs.delete(i);
+    chip.classList.remove('selected');
+  } else {
+    if (selectedDirs.size >= 3) return;
+    selectedDirs.add(i);
+    chip.classList.add('selected');
+  }
+  const count = selectedDirs.size;
+  document.getElementById('dir-count').textContent = count;
+  const visual = document.getElementById('chosen-visual');
+  const btn = document.getElementById('dir-btn');
+  if (count === 3) {
+    visual.classList.add('visible');
+    btn.style.display = 'block';
+    renderChosenPaths();
+  } else {
+    visual.classList.remove('visible');
+    btn.style.display = 'none';
+  }
+}
+
+function renderChosenPaths() {
+  const container = document.getElementById('chosen-paths');
+  container.innerHTML = '';
+  const colors = ['rgba(168,85,247,0.5)', 'rgba(212,175,55,0.4)', 'rgba(249,168,212,0.45)'];
+  [...selectedDirs].forEach((i, idx) => {
+    const d = directions[i];
+    const orb = document.createElement('div');
+    orb.className = 'path-orb';
+    orb.style.background = `radial-gradient(circle at 38% 38%, rgba(255,255,255,0.3), ${colors[idx]})`;
+    orb.style.boxShadow = `0 0 20px ${colors[idx]}, 0 0 40px ${colors[idx]}`;
+    orb.innerHTML = `<span style="font-size:24px">${d.icon}</span>`;
+    container.appendChild(orb);
+  });
+}
+
+buildDirGrid();
+
+/* ===== NAVIGATION ===== */
+const navScreens = ['s2', 's4', 's5', 's6'];
+
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById(id).scrollTop = 0;
+
+  const showNav = navScreens.includes(id);
+  document.getElementById('nav-bar').style.display = showNav ? 'flex' : 'none';
+
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navEl = document.getElementById('nav-' + id);
+  if (navEl) navEl.classList.add('active');
+}
+
+/* ===== OPEN DOMAIN ===== */
+function openDomain(i) {
+  const d = domains[i];
+  document.getElementById('dc-icon').textContent = d.icon;
+  document.getElementById('dc-title').textContent = d.title;
+  document.getElementById('dc-now').textContent = d.now;
+  document.getElementById('dc-change').textContent = d.change;
+  document.getElementById('dc-msg').textContent = d.msg;
+  document.getElementById('dc-step').textContent = d.step;
+  goTo('s3');
+}
+
+/* ===== STEP CHECK ===== */
+function toggleCheck(el) {
+  el.classList.toggle('done');
+}
+</script>
+</body>
+</html>
