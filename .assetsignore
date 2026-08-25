@@ -1,0 +1,7 @@
+_worker.js
+wrangler.jsonc
+.assetsignore
+.git
+.wrangler
+node_modules
+bronia-hologram.mp4
