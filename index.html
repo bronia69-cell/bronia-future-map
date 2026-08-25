@@ -96,7 +96,7 @@ textarea, input[type=text] {
 textarea:focus, input[type=text]:focus {
   border-color: var(--purple);
 }
-textarea { min-height: 80px; }
+textarea { min-height: 140px; }
 
 .btn {
   display: block;
@@ -483,8 +483,8 @@ textarea { min-height: 80px; }
 <body>
 
 <!-- PAGE 1: INPUT (step-by-step, light background) -->
-<div class="page active" id="page-input" style="background:linear-gradient(160deg,#f5f0ff,#ede8fa); min-height:100vh; padding:0;">
-  <div style="max-width:520px; margin:0 auto; padding:24px 20px;">
+<div class="page active" id="page-input" style="background:linear-gradient(160deg,#f5f0ff,#ede8fa); min-height:100vh; padding:0; display:flex; flex-direction:column;">
+  <div style="max-width:520px; width:100%; margin:0 auto; padding:24px 20px; flex:1; display:flex; flex-direction:column; justify-content:center;">
 
     <!-- Progress -->
     <div id="q-progress" style="display:flex; gap:5px; justify-content:center; margin-bottom:24px; flex-wrap:wrap;"></div>
@@ -1012,10 +1012,14 @@ textarea { min-height: 80px; }
 // ===== STATE =====
 // ===== STEP-BY-STEP QUESTIONS =====
 const QUESTIONS = [
-  { id:'strengths',  type:'multi-text', title:'✨ מה האמונות/המחשבות הטובות שיש לי על עצמי?', hint:'רשמי כל אמונה בשורה נפרדת. אפשר כמה שתרצי.', placeholder:'לדוגמה: אני חזקה, אני יצירתית, אני אוהבת...' },
-  { id:'belief-empowering-meaning', type:'text', title:'💜 מה האמונה/המחשבה החיובית מאפשרת לי?', hint:'מה היא מאפשרת לך לעשות בפועל?', placeholder:'לדוגמה: ללכת לראיון עבודה, להתחיל זוגיות, לטוס לחו"ל, לבקש העלאה...' },
-  { id:'beliefs',    type:'multi-text', title:'🚫 מה האמונות/המחשבות השליליות שיש לי על עצמי?', hint:'רשמי כל אמונה בשורה נפרדת. אפשר כמה שתרצי.', placeholder:'לדוגמה: אני לא מספיקה, אני לא ראויה לאהבה...' },
-  { id:'belief-limiting-meaning', type:'text', title:'💭 מה האמונה/המחשבה השלילית גורמת לי?', hint:'מה היא גורמת לך לא לעשות בפועל?', placeholder:'לדוגמה: לא ללכת לראיון, לא להיות בזוגיות, לא לטוס, לא לבקש מה שמגיע לי...' },
+  { type:'pair', title:'✨ האמונות/המחשבות החיוביות שלי', fields:[
+      { id:'strengths', label:'מה האמונות/המחשבות הטובות שיש לי על עצמי?', hint:'רשמי כל אמונה בשורה נפרדת.', placeholder:'לדוגמה: אני חזקה, אני יצירתית, אני אוהבת...' },
+      { id:'belief-empowering-meaning', label:'מה הן מאפשרות לי לעשות בפועל?', hint:'', placeholder:'לדוגמה: ללכת לראיון עבודה, להתחיל זוגיות, לטוס לחו"ל...' },
+    ]},
+  { type:'pair', title:'🚫 האמונות/המחשבות השליליות שלי', fields:[
+      { id:'beliefs', label:'מה האמונות/המחשבות השליליות שיש לי על עצמי?', hint:'רשמי כל אמונה בשורה נפרדת.', placeholder:'לדוגמה: אני לא מספיקה, אני לא ראויה לאהבה...' },
+      { id:'belief-limiting-meaning', label:'מה הן גורמות לי לא לעשות בפועל?', hint:'', placeholder:'לדוגמה: לא ללכת לראיון, לא להיות בזוגיות, לא לטוס...' },
+    ]},
   { id:'money',      type:'rating', title:'💰 עד כמה אני מרוצה מכמות וזרימת הכסף בחיי?', hint:'1 = כלל לא מרוצה, 10 = מרוצה מאוד' },
   { id:'health',     type:'rating', title:'🌿 מה רמת הבריאות שלי?', hint:'1 = ממש לא בריאה, 10 = בריאות מצוינת' },
   { id:'confidence', type:'rating', title:'💪 הביטחון שלי — כמה אני בטוחה ביכולות שלי?', hint:'1 = אין ביטחון, 10 = ביטחון מלא' },
@@ -1046,7 +1050,17 @@ function qRender() {
   const hintStyle = 'font-size:0.9rem; color:#9ca3af; margin-bottom:18px; line-height:1.5;';
   const inputStyle = 'width:100%; background:#f5f0ff; border:1.5px solid #d8b4fe; border-radius:12px; color:#3b0764; font-family:Heebo,sans-serif; font-size:1rem; padding:12px 14px; resize:vertical; outline:none; min-height:90px; box-sizing:border-box; direction:rtl;';
 
-  if (q.type === 'multi-text' || q.type === 'text') {
+  if (q.type === 'pair') {
+    c.innerHTML = `<div style="${cardStyle}">
+      <div style="${titleStyle}">${q.title}</div>
+      ${q.fields.map((f,i) => `
+        <div style="margin-bottom:${i<q.fields.length-1?'20px':'0'};">
+          <div style="font-size:0.95rem;font-weight:700;color:#5b21b6;margin-bottom:6px;">${f.label}</div>
+          ${f.hint ? `<div style="font-size:0.85rem;color:#9ca3af;margin-bottom:8px;">${f.hint}</div>` : ''}
+          <textarea id="q-pair-${f.id}" style="${inputStyle} min-height:110px;" placeholder="${f.placeholder||''}">${qData[f.id]||''}</textarea>
+        </div>`).join('')}
+    </div>`;
+  } else if (q.type === 'multi-text' || q.type === 'text') {
     c.innerHTML = `<div style="${cardStyle}">
       <div style="${titleStyle}">${q.title}</div>
       ${q.hint ? `<div style="${hintStyle}">${q.hint}</div>` : ''}
@@ -1117,7 +1131,12 @@ function qRateEmo(key, n) {
 
 function qSaveCurrent() {
   const q = QUESTIONS[qStep];
-  if (q.type === 'multi-text' || q.type === 'text') {
+  if (q.type === 'pair') {
+    q.fields.forEach(f => {
+      const el = document.getElementById('q-pair-' + f.id);
+      if (el) qData[f.id] = el.value;
+    });
+  } else if (q.type === 'multi-text' || q.type === 'text') {
     const el = document.getElementById('q-input');
     if (el) qData[q.id] = el.value;
   } else if (q.type === 'gold') {
