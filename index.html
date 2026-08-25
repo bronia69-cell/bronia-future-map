@@ -482,37 +482,8 @@ textarea { min-height: 80px; }
 </head>
 <body>
 
-<!-- PAGE 0: VIDEO INTRO -->
-<div class="page active" id="page-video" style="padding:0; background:#000;">
-  <div style="position:relative; width:100%; max-width:600px; margin:0 auto;">
-    <video id="intro-video" src="bronia-hologram.mp4" playsinline
-      style="width:100%; display:block; filter:brightness(1.12) contrast(1.05) saturate(1.15);"
-      onended="goTo('page-input',1)">
-    </video>
-
-    <!-- כפתור התחלה על גבי הוידאו -->
-    <div id="video-start-overlay" onclick="startVideo()"
-      style="position:absolute; inset:0; display:flex; flex-direction:column;
-      align-items:center; justify-content:center; background:rgba(4,2,15,0.7); cursor:pointer;">
-      <div style="width:72px; height:72px; border-radius:50%;
-        background:linear-gradient(135deg,#7c3aed,#a855f7);
-        display:flex; align-items:center; justify-content:center;
-        box-shadow:0 0 30px rgba(168,85,247,0.7); font-size:1.8rem; margin-bottom:14px;">▶</div>
-      <div style="color:#ffe88a; font-family:Heebo,sans-serif; font-size:1.1rem; font-weight:700;">לחצי להתחלה</div>
-    </div>
-  </div>
-
-  <button onclick="document.getElementById('intro-video').pause(); goTo('page-input',1)"
-    style="position:fixed; bottom:30px; left:50%; transform:translateX(-50%);
-    background:rgba(168,85,247,0.3); border:1px solid rgba(168,85,247,0.5);
-    color:#e9d5ff; font-family:Heebo,sans-serif; font-size:0.9rem; font-weight:700;
-    padding:10px 24px; border-radius:20px; cursor:pointer; backdrop-filter:blur(4px);">
-    דלגי ←
-  </button>
-</div>
-
 <!-- PAGE 1: INPUT (step-by-step, light background) -->
-<div class="page" id="page-input" style="background:linear-gradient(160deg,#f5f0ff,#ede8fa); min-height:100vh; padding:0;">
+<div class="page active" id="page-input" style="background:linear-gradient(160deg,#f5f0ff,#ede8fa); min-height:100vh; padding:0;">
   <div style="max-width:520px; margin:0 auto; padding:24px 20px;">
 
     <!-- Progress -->
@@ -1577,12 +1548,6 @@ function startEMR() {
   state.emrInterval = requestAnimationFrame(frame);
 }
 
-function startVideo() {
-  const v = document.getElementById('intro-video');
-  const overlay = document.getElementById('video-start-overlay');
-  overlay.style.display = 'none';
-  v.play();
-}
 
 function toggleSub(btn, group) {
   btn.closest('.submod-opts').querySelectorAll('.submod-btn').forEach(b => b.classList.remove('active'));
