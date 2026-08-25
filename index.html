@@ -1020,12 +1020,18 @@ const QUESTIONS = [
       { id:'beliefs', label:'מה האמונות/המחשבות השליליות שיש לי על עצמי?', hint:'רשמי כל אמונה בשורה נפרדת.', placeholder:'לדוגמה: אני לא מספיקה, אני לא ראויה לאהבה...' },
       { id:'belief-limiting-meaning', label:'מה הן גורמות לי לא לעשות בפועל?', hint:'', placeholder:'לדוגמה: לא ללכת לראיון, לא להיות בזוגיות, לא לטוס...' },
     ]},
-  { id:'money',      type:'rating', title:'💰 עד כמה אני מרוצה מכמות וזרימת הכסף בחיי?', hint:'1 = כלל לא מרוצה, 10 = מרוצה מאוד' },
-  { id:'health',     type:'rating', title:'🌿 מה רמת הבריאות שלי?', hint:'1 = ממש לא בריאה, 10 = בריאות מצוינת' },
-  { id:'confidence', type:'rating', title:'💪 הביטחון שלי — כמה אני בטוחה ביכולות שלי?', hint:'1 = אין ביטחון, 10 = ביטחון מלא' },
-  { id:'value',      type:'rating', title:'👑 הערך שלי — כמה אני שווה?', hint:'1 = לא מרגישה ערך, 10 = מלאת ערך' },
-  { id:'image',      type:'rating', title:'🪞 הדימוי שלי — מה אני חושבת על הניראות שלי?', hint:'1 = לא אוהבת את עצמי, 10 = אוהבת את עצמי מאוד' },
-  { id:'satisfaction',type:'rating', title:'😊 רמת הסיפוק שלי — עד כמה אני שמחה בחלקי?', hint:'1 = כלל לא מסופקת, 10 = מסופקת מאוד' },
+  { type:'rating-pair', fields:[
+      { id:'money',      emoji:'💰', title:'כסף', hint:'עד כמה את מרוצה מכמות וזרימת הכסף בחיי?', subhint:'1 = כלל לא מרוצה, 10 = מרוצה מאוד' },
+      { id:'confidence', emoji:'💪', title:'ביטחון', hint:'כמה את בטוחה ביכולות שלך?', subhint:'1 = אין ביטחון, 10 = ביטחון מלא' },
+    ]},
+  { type:'rating-pair', fields:[
+      { id:'value',  emoji:'👑', title:'ערך', hint:'כמה את שווה?', subhint:'1 = לא מרגישה ערך, 10 = מלאת ערך' },
+      { id:'image',  emoji:'🪞', title:'דימוי', hint:'מה את חושבת על הניראות שלך?', subhint:'1 = לא אוהבת את עצמי, 10 = אוהבת את עצמי מאוד' },
+    ]},
+  { type:'rating-pair', fields:[
+      { id:'satisfaction', emoji:'😊', title:'סיפוק', hint:'עד כמה את שמחה בחלקך?', subhint:'1 = כלל לא מסופקת, 10 = מסופקת מאוד' },
+      { id:'health',       emoji:'🌿', title:'בריאות', hint:'מה רמת הבריאות שלך?', subhint:'1 = ממש לא בריאה, 10 = בריאות מצוינת' },
+    ]},
   { id:'people',     type:'text', title:'👥 האנשים המשמעותיים בחיי', hint:'מי האנשים שהכי משפיעים עלייך — לטובה ולרעה?', placeholder:'לדוגמה: אמא שלי, בן/בת זוגי, חברה קרובה...' },
   { id:'emotions',   type:'emotions', title:'💜 מה הרגש הדומיננטי בחיי?', hint:'1 = כמעט לא קיים, 10 = נוכח מאוד' },
   { id:'values',     type:'text', title:'⭐ מהם הערכים שלי?', hint:'מה הכי חשוב לך שיהיה בחיים שלך?', placeholder:'לדוגמה: משפחה, חירות, אהבה, יצירה, צדק...' },
@@ -1065,6 +1071,19 @@ function qRender() {
       <div style="${titleStyle}">${q.title}</div>
       ${q.hint ? `<div style="${hintStyle}">${q.hint}</div>` : ''}
       <textarea id="q-input" style="${inputStyle}${q.type==='text'?'min-height:110px;':''}" placeholder="${q.placeholder||''}">${qData[q.id]||''}</textarea>
+    </div>`;
+  } else if (q.type === 'rating-pair') {
+    c.innerHTML = `<div style="${cardStyle}">
+      ${q.fields.map(f => {
+        const cur = qData[f.id] || null;
+        return `<div style="margin-bottom:24px;">
+          <div style="${titleStyle}">${f.emoji} ${f.title}</div>
+          <div style="${hintStyle}">${f.hint}<br><span style="font-size:0.82rem;color:#c4b5fd;">${f.subhint}</span></div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
+            ${[1,2,3,4,5,6,7,8,9,10].map(n => `<button onclick="qRate('${f.id}',${n})" id="qr-${f.id}-${n}" style="width:44px;height:44px;border-radius:50%;border:2px solid #a855f7;background:${cur===n?'#a855f7':'transparent'};color:${cur===n?'#fff':'#7c3aed'};font-family:Heebo,sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;">${n}</button>`).join('')}
+          </div>
+        </div>`;
+      }).join('')}
     </div>`;
   } else if (q.type === 'rating') {
     const cur = qData[q.id] || null;
@@ -1131,7 +1150,7 @@ function qRateEmo(key, n) {
 
 function qSaveCurrent() {
   const q = QUESTIONS[qStep];
-  if (q.type === 'pair') {
+  if (q.type === 'pair' || q.type === 'rating-pair') {
     q.fields.forEach(f => {
       const el = document.getElementById('q-pair-' + f.id);
       if (el) qData[f.id] = el.value;
