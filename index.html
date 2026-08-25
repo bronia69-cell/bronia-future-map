@@ -1066,7 +1066,7 @@ function qRender() {
       ${q.fields.map((f,i) => `
         <div style="margin-bottom:${i<q.fields.length-1?'20px':'0'};">
           <div style="font-size:0.95rem;font-weight:700;color:#5b21b6;margin-bottom:6px;">${f.label}</div>
-          ${f.hint ? `<div style="font-size:0.85rem;color:#9ca3af;margin-bottom:8px;">${f.hint}</div>` : ''}
+          ${f.hint ? `<div style="font-size:0.9rem;color:#5b21b6;margin-bottom:8px;font-weight:500;">${f.hint}</div>` : ''}
           <textarea id="q-pair-${f.id}" style="${inputStyle} min-height:110px;" placeholder="${f.placeholder||''}">${qData[f.id]||''}</textarea>
         </div>`).join('')}
     </div>`;
