@@ -1032,11 +1032,15 @@ const QUESTIONS = [
       { id:'satisfaction', emoji:'😊', title:'סיפוק', hint:'עד כמה את שמחה בחלקך?', subhint:'1 = כלל לא מסופקת, 10 = מסופקת מאוד' },
       { id:'health',       emoji:'🌿', title:'בריאות', hint:'מה רמת הבריאות שלך?', subhint:'1 = ממש לא בריאה, 10 = בריאות מצוינת' },
     ]},
-  { id:'people',     type:'text', title:'👥 האנשים המשמעותיים בחיי', hint:'מי האנשים שהכי משפיעים עלייך — לטובה ולרעה?', placeholder:'לדוגמה: אמא שלי, בן/בת זוגי, חברה קרובה...' },
   { id:'emotions',   type:'emotions', title:'💜 מה הרגש הדומיננטי בחיי?', hint:'1 = כמעט לא קיים, 10 = נוכח מאוד' },
-  { id:'values',     type:'text', title:'⭐ מהם הערכים שלי?', hint:'מה הכי חשוב לך שיהיה בחיים שלך?', placeholder:'לדוגמה: משפחה, חירות, אהבה, יצירה, צדק...' },
-  { id:'qualities',  type:'text', title:'🌟 מהן התכונות הכי טובות שלי?', placeholder:'לדוגמה: אמפתיה, יצירתיות, נחישות, חום...' },
-  { id:'weaknesses', type:'text', title:'🤍 מהם החסרונות שלי?', hint:'ללא שיפוטיות — ידיעה היא כוח.', placeholder:'לדוגמה: חוסר סבלנות, פרפקציוניזם, קושי בגבולות...' },
+  { type:'pair', title:'👥 אנשים וערכים', fields:[
+      { id:'people', label:'האנשים המשמעותיים בחיי', hint:'מי האנשים שהכי משפיעים עלייך — לטובה ולרעה?', placeholder:'לדוגמה: אמא שלי, בן/בת זוגי, חברה קרובה...' },
+      { id:'values', label:'מהם הערכים שלי?', hint:'מה הכי חשוב לך שיהיה בחיים שלך?', placeholder:'לדוגמה: משפחה, חירות, אהבה, יצירה, צדק...' },
+    ]},
+  { type:'pair', title:'🌟 תכונות וחסרונות', fields:[
+      { id:'qualities',  label:'מהן התכונות הכי טובות שלי?', hint:'', placeholder:'לדוגמה: אמפתיה, יצירתיות, נחישות, חום...' },
+      { id:'weaknesses', label:'מהם החסרונות שלי?', hint:'ללא שיפוטיות — ידיעה היא כוח.', placeholder:'לדוגמה: חוסר סבלנות, פרפקציוניזם, קושי בגבולות...' },
+    ]},
   { id:'gold',       type:'gold', title:'✨ שאלת הזהב', hint:'' },
   { id:'commitment', type:'commitment', title:'', hint:'' },
 ];
@@ -1053,7 +1057,7 @@ function qRender() {
   const c = document.getElementById('q-container');
   const cardStyle = 'background:#fff; border-radius:20px; padding:28px 22px; box-shadow:0 4px 24px rgba(168,85,247,0.12); border:1.5px solid rgba(168,85,247,0.15);';
   const titleStyle = 'font-size:1.25rem; font-weight:900; color:#5b21b6; margin-bottom:8px; line-height:1.4;';
-  const hintStyle = 'font-size:0.9rem; color:#9ca3af; margin-bottom:18px; line-height:1.5;';
+  const hintStyle = 'font-size:0.9rem; color:#6b7280; margin-bottom:18px; line-height:1.5;';
   const inputStyle = 'width:100%; background:#f5f0ff; border:1.5px solid #d8b4fe; border-radius:12px; color:#3b0764; font-family:Heebo,sans-serif; font-size:1rem; padding:12px 14px; resize:vertical; outline:none; min-height:90px; box-sizing:border-box; direction:rtl;';
 
   if (q.type === 'pair') {
@@ -1078,7 +1082,7 @@ function qRender() {
         const cur = qData[f.id] || null;
         return `<div style="margin-bottom:24px;">
           <div style="${titleStyle}">${f.emoji} ${f.title}</div>
-          <div style="${hintStyle}">${f.hint}<br><span style="font-size:0.82rem;color:#c4b5fd;">${f.subhint}</span></div>
+          <div style="${hintStyle}">${f.hint}<br><span style="font-size:0.82rem;color:#7c3aed;">${f.subhint}</span></div>
           <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
             ${[1,2,3,4,5,6,7,8,9,10].map(n => `<button onclick="qRate('${f.id}',${n})" id="qr-${f.id}-${n}" style="width:44px;height:44px;border-radius:50%;border:2px solid #a855f7;background:${cur===n?'#a855f7':'transparent'};color:${cur===n?'#fff':'#7c3aed'};font-family:Heebo,sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;">${n}</button>`).join('')}
           </div>
