@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>מפת העולם העתידי שלך</title>
+<title>מפת העולם שלי</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&display=swap');
 
@@ -18,1101 +18,1844 @@
   --purple: #a855f7;
   --purple-light: #c084fc;
   --pink: #f9a8d4;
-  --pink-glow: rgba(249,168,212,0.25);
-  --text: #f0e6ff;
-  --text-soft: rgba(233,213,255,0.75);
-  --text-dim: rgba(216,180,254,0.45);
-  --border: rgba(192,132,252,0.2);
-  --glow-purple: rgba(168,85,247,0.35);
-  --glow-gold: rgba(212,175,55,0.4);
+  --blue: #60a5fa;
+  --green: #4ade80;
+  --red: #f87171;
+  --orange: #fb923c;
+  --teal: #2dd4bf;
 }
 
-html, body {
-  height: 100%;
-  overflow: hidden;
+body {
+  font-family: 'Heebo', sans-serif;
   background: var(--bg);
-  font-family: 'Heebo', 'Arial Hebrew', Arial, sans-serif;
-  color: var(--text);
-  direction: rtl;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
-}
-
-canvas#stars {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.app {
-  position: relative;
-  z-index: 1;
-  height: 100%;
-  overflow: hidden;
-}
-
-/* ===== SCREENS ===== */
-.screen {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow-y: auto;
+  color: #e9d5ff;
+  min-height: 100vh;
   overflow-x: hidden;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s ease;
-  -webkit-overflow-scrolling: touch;
-}
-.screen.active {
-  opacity: 1;
-  pointer-events: auto;
 }
 
-/* ===== SCREEN 1: OPENING ===== */
-#s1 {
-  justify-content: center;
-  padding: 40px 24px;
-  background: radial-gradient(ellipse at 50% 30%, rgba(80,20,140,0.2) 0%, transparent 65%);
+.page {
+  display: none;
+  min-height: 100vh;
+  padding: 20px;
+  animation: fadeIn 0.5s ease;
+}
+.page.active { display: block; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+h1 {
   text-align: center;
-}
-
-.opening-portrait {
-  width: 170px;
-  height: 170px;
-  border-radius: 50%;
-  object-fit: cover;
-  object-position: center top;
-  margin: 0 auto 28px;
-  display: block;
-  box-shadow:
-    0 0 0 3px rgba(212,175,55,0.5),
-    0 0 30px rgba(168,85,247,0.6),
-    0 0 70px rgba(168,85,247,0.25),
-    0 0 110px rgba(212,175,55,0.12);
-  animation: breathe-img 4s ease-in-out infinite;
-  filter: brightness(1.05) saturate(1.1);
-}
-@keyframes breathe-img {
-  0%,100% { box-shadow: 0 0 0 3px rgba(212,175,55,0.5), 0 0 30px rgba(168,85,247,0.6), 0 0 70px rgba(168,85,247,0.25); }
-  50%      { box-shadow: 0 0 0 4px rgba(212,175,55,0.7), 0 0 45px rgba(168,85,247,0.85), 0 0 100px rgba(168,85,247,0.35), 0 0 130px rgba(212,175,55,0.18); }
-}
-
-.opening-title {
-  font-size: 28px;
+  font-size: clamp(1.5rem, 5vw, 2.4rem);
   font-weight: 900;
   color: var(--gold-light);
+  margin-bottom: 8px;
   line-height: 1.3;
-  margin-bottom: 14px;
-  text-shadow: 0 0 30px rgba(212,175,55,0.5);
 }
-.opening-subtitle {
-  font-size: 16px;
-  color: var(--text-soft);
-  line-height: 1.7;
-  margin-bottom: 48px;
-  max-width: 280px;
+h2 {
+  font-size: clamp(1.1rem, 3.5vw, 1.5rem);
+  font-weight: 700;
+  color: var(--purple-light);
+  margin-bottom: 10px;
+}
+.subtitle {
+  text-align: center;
+  color: #c4b5fd;
+  font-size: 1rem;
+  margin-bottom: 28px;
 }
 
-.btn-main {
+.card {
+  background: var(--card);
+  border: 1px solid rgba(168,85,247,0.3);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 18px;
+}
+
+label {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--gold-light);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+textarea, input[type=text] {
+  width: 100%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(168,85,247,0.4);
+  border-radius: 10px;
+  color: #e9d5ff;
+  font-family: 'Heebo', sans-serif;
+  font-size: 0.95rem;
+  padding: 10px 12px;
+  resize: vertical;
+  outline: none;
+  transition: border 0.2s;
+}
+textarea:focus, input[type=text]:focus {
+  border-color: var(--purple);
+}
+textarea { min-height: 80px; }
+
+.btn {
   display: block;
   width: 100%;
-  max-width: 300px;
-  padding: 17px 24px;
-  background: linear-gradient(135deg, #7c3aed, #a855f7, #c084fc);
+  max-width: 360px;
+  margin: 20px auto 0;
+  padding: 16px;
+  border-radius: 14px;
   border: none;
-  border-radius: 50px;
-  color: #fff;
-  font-family: inherit;
-  font-size: 18px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 1.1rem;
   font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 6px 24px rgba(124,58,237,0.5), 0 0 40px rgba(168,85,247,0.2);
-  transition: transform 0.15s, box-shadow 0.15s;
-  text-align: center;
-  animation: btn-glow 3s ease-in-out infinite;
+  transition: all 0.2s;
 }
-.btn-main:active { transform: scale(0.97); }
-
-.opening-note {
-  margin-top: 20px;
-  font-size: 13px;
-  color: var(--text-dim);
-  line-height: 1.6;
-  max-width: 280px;
+.btn-primary {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: white;
+  box-shadow: 0 4px 20px rgba(168,85,247,0.4);
 }
-
-/* ===== SCREEN 2: THE MAP ===== */
-#s2 {
-  padding: 20px 16px 30px;
-  align-items: center;
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(168,85,247,0.6); }
+.btn-gold {
+  background: linear-gradient(135deg, #b8860b, #d4af37);
+  color: #1a0a00;
+}
+.btn-gold:hover { transform: translateY(-2px); }
+.btn-green {
+  background: linear-gradient(135deg, #15803d, #4ade80);
+  color: #001a08;
 }
 
-.screen-header {
-  text-align: center;
-  margin-bottom: 6px;
-  flex-shrink: 0;
-}
-.screen-header h2 {
-  font-size: 22px;
-  font-weight: 900;
-  color: var(--gold-light);
+.section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--purple-light);
   margin-bottom: 4px;
 }
-.screen-header p {
-  font-size: 14px;
-  color: var(--text-dim);
+.section-hint {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin-bottom: 10px;
 }
 
-.map-container {
+/* ===== MAP PAGE ===== */
+#map-container, #map-container-2 {
   position: relative;
-  width: min(340px, 92vw);
-  height: min(340px, 92vw);
-  flex-shrink: 0;
-  margin: 10px auto;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  aspect-ratio: 1;
+  background: radial-gradient(ellipse at center, #1a0535 0%, #04020f 70%);
+  border: 2px solid rgba(168,85,247,0.3);
+  border-radius: 50%;
+  overflow: visible;
+  touch-action: none;
 }
 
-/* Connecting lines (SVG behind everything) */
-.map-lines {
+.center-person {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 84px; height: 84px;
+  background: radial-gradient(circle, #2a0a5e, #1a0535);
+  border: 2px solid rgba(212,175,55,0.7);
+  border-radius: 50%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  box-shadow: 0 0 30px rgba(212,175,55,0.5), 0 0 60px rgba(168,85,247,0.3);
+  z-index: 10;
+  cursor: default;
+}
+
+.clock-num {
+  position: absolute;
+  color: rgba(212,175,55,0.5);
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: 'Heebo', sans-serif;
+  user-select: none;
   pointer-events: none;
 }
 
-/* Central orb */
-.center-orb {
+.rep-tag {
   position: absolute;
-  width: 84px;
-  height: 84px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #f0e6ff, #a855f7 45%, #4c1d95);
-  box-shadow:
-    0 0 30px rgba(168,85,247,0.8),
-    0 0 60px rgba(168,85,247,0.4),
-    0 0 90px rgba(212,175,55,0.2);
-  animation: breathe 3.5s ease-in-out infinite;
-  z-index: 2;
-  display: flex;
-  align-items: center;
+  padding: 3px 7px;
+  border-radius: 14px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  white-space: nowrap;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  transition: box-shadow 0.1s;
+  z-index: 5;
+  text-align: center;
+  line-height: 1.3;
+}
+.rep-tag:active { cursor: grabbing; box-shadow: 0 4px 20px rgba(0,0,0,0.7); }
+
+.rep-tag.belief   { background: rgba(248,113,113,0.85); color: #fff; border: 1px solid #f87171; }
+.rep-tag.strength { background: rgba(74,222,128,0.85); color: #001; border: 1px solid #4ade80; }
+.rep-tag.good-at  { background: rgba(96,165,250,0.85); color: #001; border: 1px solid #60a5fa; }
+.rep-tag.less-good{ background: rgba(251,146,60,0.85); color: #001; border: 1px solid #fb923c; }
+.rep-tag.emotion  { background: rgba(232,121,249,0.85); color: #fff; border: 1px solid #e879f9; }
+.rep-tag.thought  { background: rgba(250,204,21,0.85); color: #1a0a00; border: 1px solid #fbbf24; }
+.rep-tag.person-pos { background: rgba(45,212,191,0.85); color: #001; border: 1px solid #2dd4bf; }
+.rep-tag.person-neg { background: rgba(239,68,68,0.9); color: #fff; border: 1px solid #ef4444; }
+.rep-tag.family     { background: rgba(129,140,248,0.85); color: #fff; border: 1px solid #818cf8; }
+.rep-tag.friend     { background: rgba(244,114,182,0.85); color: #fff; border: 1px solid #f472b6; }
+
+.map-legend {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin: 14px auto; max-width: 600px;
   justify-content: center;
-  font-size: 30px;
+}
+.legend-item {
+  padding: 3px 10px; border-radius: 12px;
+  font-size: 0.72rem; font-weight: 700;
 }
 
-/* Domain nodes */
-.domain-node {
-  position: absolute;
-  width: 68px;
-  height: 68px;
+/* ===== FEELING RATING ===== */
+.rating-row {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  justify-content: center; margin: 16px 0;
+}
+.rating-btn {
+  width: 44px; height: 44px;
   border-radius: 50%;
-  background: var(--card);
-  border: 1.5px solid var(--border);
-  display: flex;
+  border: 2px solid rgba(168,85,247,0.4);
+  background: rgba(255,255,255,0.05);
+  color: #e9d5ff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.rating-btn:hover, .rating-btn.selected {
+  background: var(--purple);
+  border-color: var(--purple);
+  color: white;
+  transform: scale(1.1);
+}
+.rating-btn.bad { background: rgba(248,113,113,0.2); border-color: #f87171; }
+.rating-btn.bad.selected { background: #f87171; }
+
+/* ===== EYE MOVEMENT ===== */
+#emr-page {
+  display: none;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-  z-index: 3;
-  backdrop-filter: blur(8px);
+  min-height: 100vh;
+  padding: 20px;
 }
-.domain-node:active { transform: scale(0.93) !important; }
-.domain-node .d-icon { font-size: 22px; line-height: 1; }
-.domain-node .d-label {
-  font-size: 9px;
-  font-weight: 700;
-  color: var(--text-soft);
+#emr-page.active { display: flex; }
+
+#emr-track {
+  width: calc(100vw - 8px);
+  margin-left: calc(-50vw + 50% + 4px);
+  background: rgba(255,255,255,0.04);
+  border: 2px solid rgba(168,85,247,0.3);
+  border-radius: 12px;
+  position: relative;
+  margin-top: 10px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+#emr-ball {
+  width: 60px; height: 60px;
+  background: radial-gradient(circle at 35% 35%, #c084fc, #7c3aed);
+  border-radius: 50%;
+  position: absolute;
+  box-shadow: 0 0 22px rgba(168,85,247,0.9), 0 0 50px rgba(168,85,247,0.4);
+  transition: none;
+  pointer-events: none;
+}
+
+#emr-instruction {
+  font-size: 1.1rem;
+  color: #c4b5fd;
   text-align: center;
-  line-height: 1.2;
-  margin-top: 3px;
-  max-width: 62px;
+  margin-bottom: 10px;
 }
-
-/* Positioning: container 340x340, center 170,170, r=118 */
-/* Top (270°): x=170, y=52 → left=136, top=18 */
-.d0 { left: calc(50% + 0px - 34px); top: calc(50% - 118px - 34px); }
-/* Top-right (330°): x=272, y=111 → */
-.d1 { left: calc(50% + 102px - 34px); top: calc(50% - 59px - 34px); }
-/* Bottom-right (30°): x=272, y=229 → */
-.d2 { left: calc(50% + 102px - 34px); top: calc(50% + 59px - 34px); }
-/* Bottom (90°): x=170, y=288 → */
-.d3 { left: calc(50% + 0px - 34px); top: calc(50% + 118px - 34px); }
-/* Bottom-left (150°): x=68, y=229 → */
-.d4 { left: calc(50% - 102px - 34px); top: calc(50% + 59px - 34px); }
-/* Top-left (210°): x=68, y=111 → */
-.d5 { left: calc(50% - 102px - 34px); top: calc(50% - 59px - 34px); }
-
-.d0 { border-color: rgba(249,168,212,0.5); box-shadow: 0 0 16px rgba(249,168,212,0.3); }
-.d1 { border-color: rgba(212,175,55,0.5); box-shadow: 0 0 16px rgba(212,175,55,0.25); }
-.d2 { border-color: rgba(168,85,247,0.6); box-shadow: 0 0 16px rgba(168,85,247,0.3); }
-.d3 { border-color: rgba(52,211,153,0.5); box-shadow: 0 0 16px rgba(52,211,153,0.25); }
-.d4 { border-color: rgba(251,191,36,0.5); box-shadow: 0 0 16px rgba(251,191,36,0.25); }
-.d5 { border-color: rgba(192,132,252,0.6); box-shadow: 0 0 16px rgba(192,132,252,0.3); }
-
-.d0:hover, .d0:active { border-color: #f9a8d4; box-shadow: 0 0 28px rgba(249,168,212,0.6); }
-.d1:hover, .d1:active { border-color: #d4af37; box-shadow: 0 0 28px rgba(212,175,55,0.5); }
-.d2:hover, .d2:active { border-color: #a855f7; box-shadow: 0 0 28px rgba(168,85,247,0.6); }
-.d3:hover, .d3:active { border-color: #34d399; box-shadow: 0 0 28px rgba(52,211,153,0.5); }
-.d4:hover, .d4:active { border-color: #fbbf24; box-shadow: 0 0 28px rgba(251,191,36,0.5); }
-.d5:hover, .d5:active { border-color: #c084fc; box-shadow: 0 0 28px rgba(192,132,252,0.6); }
-
-.map-hint {
-  font-size: 13px;
-  color: var(--text-dim);
-  text-align: center;
-  margin-top: 4px;
-  animation: fade-pulse 3s ease-in-out infinite;
+#emr-counter {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--gold-light);
 }
-
-.map-bottom-btns {
-  display: flex;
-  gap: 10px;
-  margin-top: 14px;
-  width: 100%;
-  max-width: 340px;
-}
-.btn-ghost {
-  flex: 1;
-  padding: 13px;
-  background: rgba(124,58,237,0.15);
+#emr-memory-display {
+  background: var(--card);
   border: 1px solid rgba(168,85,247,0.3);
-  border-radius: 50px;
-  color: var(--purple-light);
-  font-family: inherit;
-  font-size: 14px;
+  border-radius: 14px;
+  padding: 16px 20px;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 20px;
+}
+#emr-memory-display .mem-label {
+  font-size: 0.8rem; color: var(--gold-light); margin-bottom: 6px;
+}
+#emr-memory-display .mem-text {
+  font-size: 1rem; color: #e9d5ff;
+}
+
+/* ===== ENERGY BUTTONS ===== */
+.energy-buttons {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  justify-content: center; margin: 10px 0;
+}
+.energy-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 2px solid;
+  background: transparent;
+  font-family: 'Heebo', sans-serif;
+  font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
-  text-align: center;
-  transition: background 0.2s, border-color 0.2s;
+  transition: all 0.2s;
 }
-.btn-ghost:active { background: rgba(124,58,237,0.3); }
+.energy-btn:hover, .energy-btn.active {
+  color: #000 !important;
+}
+.energy-love { border-color: #f9a8d4; color: #f9a8d4; }
+.energy-love:hover, .energy-love.active { background: #f9a8d4; }
+.energy-light { border-color: #ffe88a; color: #ffe88a; }
+.energy-light:hover, .energy-light.active { background: #ffe88a; }
+.energy-joy { border-color: #4ade80; color: #4ade80; }
+.energy-joy:hover, .energy-joy.active { background: #4ade80; }
+.energy-accept { border-color: #60a5fa; color: #60a5fa; }
+.energy-accept:hover, .energy-accept.active { background: #60a5fa; }
+.energy-release { border-color: #c084fc; color: #c084fc; }
+.energy-release:hover, .energy-release.active { background: #c084fc; }
+.energy-heal { border-color: #2dd4bf; color: #2dd4bf; }
+.energy-heal:hover, .energy-heal.active { background: #2dd4bf; }
 
-/* ===== SCREEN 3: DOMAIN CARD ===== */
-#s3 {
-  padding: 24px 20px 40px;
-  justify-content: flex-start;
+/* ===== FINAL SCORE ===== */
+.score-display {
+  text-align: center;
+  font-size: 4rem;
+  font-weight: 900;
+  color: var(--gold-light);
+  text-shadow: 0 0 30px rgba(255,232,138,0.6);
+  margin: 10px 0;
 }
+.score-change {
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--green);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.progress-bar {
+  display: flex; gap: 6px; justify-content: center;
+  margin-bottom: 24px;
+}
+.progress-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: rgba(168,85,247,0.3);
+}
+.progress-dot.done { background: var(--purple); }
+.progress-dot.current { background: var(--gold-light); box-shadow: 0 0 8px var(--gold-light); }
+
+/* energy glow animation on map */
+@keyframes energyGlow {
+  0% { box-shadow: 0 0 10px rgba(255,232,138,0.3); }
+  50% { box-shadow: 0 0 30px rgba(255,232,138,0.9), 0 0 60px rgba(168,85,247,0.6); }
+  100% { box-shadow: 0 0 10px rgba(255,232,138,0.3); }
+}
+.rep-tag.glowing { animation: energyGlow 1s ease-in-out 3; }
+
+.submod-row {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 10px; flex-wrap: wrap;
+}
+.submod-label {
+  font-size: 0.82rem; color: #9ca3af; min-width: 90px; flex-shrink: 0;
+}
+.submod-opts { display: flex; gap: 6px; flex-wrap: wrap; }
+.submod-btn {
+  padding: 5px 12px; border-radius: 16px;
+  border: 1px solid rgba(168,85,247,0.4);
+  background: transparent;
+  color: #c4b5fd; font-family: 'Heebo', sans-serif;
+  font-size: 0.8rem; cursor: pointer; transition: all 0.15s;
+}
+.submod-btn:hover { background: rgba(168,85,247,0.15); }
+.submod-btn.active { background: rgba(168,85,247,0.4); border-color: #a855f7; color: #fff; font-weight: 700; }
 
 .back-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
   background: none;
-  border: none;
-  color: var(--purple-light);
-  font-family: inherit;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  margin-bottom: 20px;
-  align-self: flex-start;
-}
-
-.domain-card-header {
-  text-align: center;
-  margin-bottom: 24px;
-  width: 100%;
-}
-.domain-card-icon {
-  font-size: 52px;
-  margin-bottom: 10px;
-  display: block;
-}
-.domain-card-title {
-  font-size: 24px;
-  font-weight: 900;
-  margin-bottom: 6px;
-}
-
-.card-section {
-  width: 100%;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 18px 20px;
-  margin-bottom: 14px;
-  backdrop-filter: blur(10px);
-}
-.card-section-label {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--gold);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 8px;
-}
-.card-section-text {
-  font-size: 16px;
-  color: var(--text);
-  line-height: 1.75;
-}
-
-.card-step {
-  background: linear-gradient(135deg, rgba(124,58,237,0.25), rgba(168,85,247,0.15));
-  border: 1px solid rgba(168,85,247,0.4);
-}
-.card-step .card-section-label { color: var(--purple-light); }
-
-/* ===== SCREEN 4: WORLD I CHOOSE ===== */
-#s4 {
-  padding: 24px 20px 40px;
-}
-
-.direction-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  width: 100%;
-  margin: 20px 0;
-}
-.dir-chip {
-  padding: 12px 8px;
-  border: 1.5px solid var(--border);
-  border-radius: 16px;
-  background: rgba(30,10,60,0.6);
-  color: var(--text-soft);
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 700;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-.dir-chip span { font-size: 20px; }
-.dir-chip.selected {
-  border-color: var(--gold);
-  background: linear-gradient(135deg, rgba(212,175,55,0.2), rgba(168,85,247,0.2));
-  color: var(--gold-light);
-  box-shadow: 0 0 20px rgba(212,175,55,0.3);
-}
-
-.dir-counter {
-  text-align: center;
-  font-size: 14px;
-  color: var(--text-dim);
-  margin-bottom: 8px;
-}
-.dir-counter span { color: var(--gold); font-weight: 800; }
-
-/* Hologram preview after selection */
-.chosen-visual {
-  width: 100%;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 20px;
-  text-align: center;
-  margin: 16px 0;
-  display: none;
-}
-.chosen-visual.visible { display: block; }
-.chosen-paths {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 12px;
-}
-.path-orb {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  animation: breathe 2.5s ease-in-out infinite;
-}
-
-/* ===== SCREEN 5: 30-DAY PATH ===== */
-#s5 {
-  padding: 24px 20px 40px;
-}
-
-.path-steps { width: 100%; margin: 20px 0; }
-.path-step {
-  display: flex;
-  gap: 14px;
-  align-items: flex-start;
-  margin-bottom: 18px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 16px 18px;
-}
-.step-num {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #7c3aed, #a855f7);
-  color: #fff;
-  font-weight: 900;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 0 14px rgba(168,85,247,0.5);
-}
-.step-content { flex: 1; }
-.step-title { font-size: 15px; font-weight: 800; margin-bottom: 4px; color: var(--gold-light); }
-.step-desc { font-size: 14px; color: var(--text-soft); line-height: 1.6; }
-.step-check {
-  width: 26px;
-  height: 26px;
-  border: 2px solid rgba(168,85,247,0.4);
-  border-radius: 50%;
-  cursor: pointer;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-  margin-top: 2px;
-}
-.step-check.done {
-  background: linear-gradient(135deg, #7c3aed, #a855f7);
-  border-color: #a855f7;
-  box-shadow: 0 0 12px rgba(168,85,247,0.5);
-}
-.step-check.done::after { content: '✓'; color: #fff; font-size: 13px; font-weight: 900; }
-
-.promise-box {
-  width: 100%;
-  background: var(--card);
-  border: 1px solid rgba(212,175,55,0.3);
-  border-radius: 20px;
-  padding: 20px;
-  margin: 6px 0 20px;
-}
-.promise-label {
-  font-size: 14px;
-  font-weight: 800;
-  color: var(--gold);
-  margin-bottom: 10px;
-}
-.promise-textarea {
-  width: 100%;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(192,132,252,0.25);
-  border-radius: 14px;
-  padding: 14px;
-  color: var(--text);
-  font-family: inherit;
-  font-size: 15px;
-  line-height: 1.7;
-  resize: none;
-  min-height: 90px;
-  direction: rtl;
-  outline: none;
-}
-.promise-textarea::placeholder { color: var(--text-dim); }
-.promise-textarea:focus { border-color: rgba(168,85,247,0.5); }
-
-/* ===== SCREEN 6: AUDIO + CLOSING ===== */
-#s6 {
-  padding: 30px 20px 50px;
-  justify-content: flex-start;
-}
-
-.audio-card {
-  width: 100%;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 24px 20px;
-  text-align: center;
-  margin: 20px 0;
-}
-.audio-title {
-  font-size: 18px;
-  font-weight: 800;
-  color: var(--gold-light);
-  margin-bottom: 8px;
-}
-.audio-desc {
-  font-size: 14px;
-  color: var(--text-soft);
-  line-height: 1.7;
-  margin-bottom: 20px;
-}
-.audio-player {
-  background: rgba(124,58,237,0.2);
   border: 1px solid rgba(168,85,247,0.3);
-  border-radius: 50px;
-  padding: 14px 20px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-.audio-play-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #7c3aed, #a855f7);
-  border: none;
-  color: #fff;
-  font-size: 18px;
+  color: #9ca3af;
+  font-family: 'Heebo', sans-serif;
+  font-size: 0.85rem;
+  padding: 6px 14px;
+  border-radius: 8px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 0 16px rgba(168,85,247,0.5);
-  transition: transform 0.15s;
+  margin-bottom: 16px;
 }
-.audio-play-btn:active { transform: scale(0.93); }
-.audio-waves {
-  flex: 1;
-  display: flex;
-  gap: 3px;
-  align-items: center;
-  height: 30px;
-}
-.wave-bar {
-  flex: 1;
-  border-radius: 4px;
-  background: rgba(192,132,252,0.35);
-}
-.audio-note {
-  font-size: 12px;
-  color: var(--text-dim);
-  margin-top: 12px;
-  font-style: italic;
+.back-btn:hover { color: #e9d5ff; }
+
+#page-video.active { display:flex; flex-direction:column; align-items:center; justify-content:center; }
+
+/* ===== MOBILE ===== */
+@media (max-width: 480px) {
+  #map-container, #map-container-2 { max-width: 320px; }
+  .rep-tag { font-size: 0.7rem; padding: 5px 8px; max-width: 100px; }
+  .rep-tag input { width: 76px; font-size: 0.7rem; }
+  .palette-btn { font-size: 0.78rem; padding: 6px 10px; }
+  h1 { font-size: 1.4rem; }
+  #emr-track { height: 160px; }
+  .rating-btn { width: 36px; height: 36px; font-size: 0.85rem; }
+  .center-person { width: 68px; height: 68px; }
 }
 
-.closing-card {
-  width: 100%;
+.selected-rep-highlight {
+  outline: 3px solid var(--gold-light) !important;
+  outline-offset: 2px;
+  z-index: 20 !important;
+}
+
+.palette-btn {
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: none;
+  font-family: 'Heebo', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  opacity: 0.9;
+  transition: transform 0.15s, opacity 0.15s;
+}
+.palette-btn:hover { transform: scale(1.05); opacity: 1; }
+.palette-btn.belief    { background: #f87171; color: #fff; }
+.palette-btn.strength  { background: #4ade80; color: #001; }
+.palette-btn.good-at   { background: #60a5fa; color: #001; }
+.palette-btn.less-good { background: #fb923c; color: #001; }
+.palette-btn.emotion   { background: #e879f9; color: #fff; }
+.palette-btn.thought   { background: #fbbf24; color: #1a0a00; }
+.palette-btn.person-pos{ background: #2dd4bf; color: #001; }
+.palette-btn.person-neg{ background: #ef4444; color: #fff; }
+.palette-btn.family    { background: #818cf8; color: #fff; }
+.palette-btn.friend    { background: #f472b6; color: #fff; }
+
+.rep-tag input {
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: 'Heebo', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: inherit;
+  width: 72px;
   text-align: center;
-  padding: 24px;
-  background: linear-gradient(135deg, rgba(80,20,160,0.4), rgba(212,175,55,0.1));
-  border: 1px solid rgba(212,175,55,0.2);
-  border-radius: 24px;
-  margin-top: 10px;
+  pointer-events: all;
 }
-.closing-icon { font-size: 44px; margin-bottom: 14px; display: block; }
-.closing-text {
-  font-size: 17px;
-  font-weight: 500;
-  color: var(--text-soft);
-  line-height: 1.8;
-}
-.closing-text em { color: var(--gold-light); font-style: normal; font-weight: 800; }
 
-/* ===== NAV BAR ===== */
-.nav-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(8, 4, 24, 0.92);
-  border-top: 1px solid rgba(192,132,252,0.15);
-  display: flex;
-  justify-content: space-around;
-  padding: 10px 0 max(10px, env(safe-area-inset-bottom));
-  z-index: 100;
-  backdrop-filter: blur(16px);
-}
-.nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  background: none;
-  border: none;
-  color: var(--text-dim);
-  font-family: inherit;
-  font-size: 10px;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 12px;
-  transition: color 0.2s;
-}
-.nav-item .ni { font-size: 20px; }
-.nav-item.active { color: var(--purple-light); }
-.nav-item.active .ni-dot {
-  display: block;
-  width: 4px;
-  height: 4px;
+.rep-tag .del-btn {
+  position: absolute;
+  top: -6px; left: -6px;
+  width: 16px; height: 16px;
   border-radius: 50%;
-  background: var(--purple-light);
-  margin: 0 auto;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-size: 10px;
+  line-height: 16px;
+  text-align: center;
+  cursor: pointer;
+  display: none;
+  border: none;
+  z-index: 30;
 }
-.ni-dot { display: none; }
-
-/* ===== ANIMATIONS ===== */
-@keyframes breathe {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(168,85,247,0.7), 0 0 60px rgba(168,85,247,0.3); }
-  50% { transform: scale(1.06); box-shadow: 0 0 45px rgba(168,85,247,0.9), 0 0 90px rgba(168,85,247,0.4), 0 0 120px rgba(212,175,55,0.2); }
-}
-@keyframes spin-slow { to { transform: rotate(360deg); } }
-@keyframes btn-glow {
-  0%, 100% { box-shadow: 0 6px 24px rgba(124,58,237,0.5), 0 0 40px rgba(168,85,247,0.2); }
-  50% { box-shadow: 0 8px 32px rgba(124,58,237,0.7), 0 0 60px rgba(168,85,247,0.35); }
-}
-@keyframes fade-pulse {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
-}
-@keyframes wave {
-  0%, 100% { height: 4px; }
-  50% { height: 24px; }
-}
-
-.screen { padding-bottom: 80px; }
+.rep-tag:hover .del-btn { display: block; }
 </style>
 </head>
 <body>
 
-<canvas id="stars"></canvas>
+<!-- PAGE 0: VIDEO INTRO -->
+<div class="page active" id="page-video" style="padding:0; background:#000;">
+  <div style="position:relative; width:100%; max-width:600px; margin:0 auto;">
+    <video id="intro-video" src="bronia-hologram.mp4" playsinline
+      style="width:100%; display:block; filter:brightness(1.12) contrast(1.05) saturate(1.15);"
+      onended="goTo('page-input',1)">
+    </video>
 
-<div class="app">
+    <!-- כפתור התחלה על גבי הוידאו -->
+    <div id="video-start-overlay" onclick="startVideo()"
+      style="position:absolute; inset:0; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; background:rgba(4,2,15,0.7); cursor:pointer;">
+      <div style="width:72px; height:72px; border-radius:50%;
+        background:linear-gradient(135deg,#7c3aed,#a855f7);
+        display:flex; align-items:center; justify-content:center;
+        box-shadow:0 0 30px rgba(168,85,247,0.7); font-size:1.8rem; margin-bottom:14px;">▶</div>
+      <div style="color:#ffe88a; font-family:Heebo,sans-serif; font-size:1.1rem; font-weight:700;">לחצי להתחלה</div>
+    </div>
+  </div>
 
-<!-- ===== SCREEN 1: OPENING ===== -->
-<div id="s1" class="screen active">
-  <img class="opening-portrait" src="https://bronia-meditation.pages.dev/harp-bronia-sm.jpg" alt="ברוניה">
-  <h1 class="opening-title">מפת העולם<br>העתידי שלך</h1>
-  <p class="opening-subtitle">מרחב אישי לדיוק, התבוננות ובניית נתיב חדש עבורך</p>
-  <button class="btn-main" onclick="goTo('s2')">✨ אני מוכנה לגלות</button>
-  <p class="opening-note">כל מה שמופיע כאן שייך לך בלבד. זהו מרחב פרטי ואישי.</p>
+  <button onclick="document.getElementById('intro-video').pause(); goTo('page-input',1)"
+    style="position:fixed; bottom:30px; left:50%; transform:translateX(-50%);
+    background:rgba(168,85,247,0.3); border:1px solid rgba(168,85,247,0.5);
+    color:#e9d5ff; font-family:Heebo,sans-serif; font-size:0.9rem; font-weight:700;
+    padding:10px 24px; border-radius:20px; cursor:pointer; backdrop-filter:blur(4px);">
+    דלגי ←
+  </button>
 </div>
 
-<!-- ===== SCREEN 2: THE MAP ===== -->
-<div id="s2" class="screen">
-  <div class="screen-header">
-    <h2>המפה שלי ✦</h2>
-    <p>לחצי על תחום לגילוי</p>
-  </div>
+<!-- PAGE 1: INPUT (step-by-step, light background) -->
+<div class="page" id="page-input" style="background:linear-gradient(160deg,#f5f0ff,#ede8fa); min-height:100vh; padding:0;">
+  <div style="max-width:520px; margin:0 auto; padding:24px 20px;">
 
-  <div class="map-container">
-    <svg class="map-lines" viewBox="0 0 340 340" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <radialGradient id="lineGrad" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="rgba(168,85,247,0.6)"/>
-          <stop offset="100%" stop-color="rgba(168,85,247,0)"/>
-        </radialGradient>
-      </defs>
-      <!-- Lines from center to each node center -->
-      <line x1="170" y1="170" x2="170" y2="52" stroke="rgba(249,168,212,0.25)" stroke-width="1" stroke-dasharray="4 4"/>
-      <line x1="170" y1="170" x2="272" y2="111" stroke="rgba(212,175,55,0.2)" stroke-width="1" stroke-dasharray="4 4"/>
-      <line x1="170" y1="170" x2="272" y2="229" stroke="rgba(168,85,247,0.25)" stroke-width="1" stroke-dasharray="4 4"/>
-      <line x1="170" y1="170" x2="170" y2="288" stroke="rgba(52,211,153,0.2)" stroke-width="1" stroke-dasharray="4 4"/>
-      <line x1="170" y1="170" x2="68" y2="229" stroke="rgba(251,191,36,0.2)" stroke-width="1" stroke-dasharray="4 4"/>
-      <line x1="170" y1="170" x2="68" y2="111" stroke="rgba(192,132,252,0.25)" stroke-width="1" stroke-dasharray="4 4"/>
-    </svg>
+    <!-- Progress -->
+    <div id="q-progress" style="display:flex; gap:5px; justify-content:center; margin-bottom:24px; flex-wrap:wrap;"></div>
 
-    <div class="center-orb">✦</div>
+    <!-- Question container -->
+    <div id="q-container"></div>
 
-    <div class="domain-node d0" onclick="openDomain(0)">
-      <span class="d-icon">🌟</span>
-      <span class="d-label">חלומות ויצירה</span>
+    <!-- Navigation -->
+    <div style="display:flex; gap:12px; justify-content:center; margin-top:24px;">
+      <button id="q-back" onclick="qPrev()" style="display:none; padding:12px 28px; border-radius:50px; border:1.5px solid #a855f7; background:transparent; color:#7c3aed; font-family:Heebo,sans-serif; font-size:1rem; font-weight:700; cursor:pointer;">→ חזרה</button>
+      <button id="q-next" onclick="qNext()" style="padding:14px 36px; border-radius:50px; border:none; background:linear-gradient(135deg,#7c3aed,#a855f7); color:#fff; font-family:Heebo,sans-serif; font-size:1.05rem; font-weight:800; cursor:pointer; box-shadow:0 4px 18px rgba(168,85,247,0.35);">המשך ←</button>
     </div>
-    <div class="domain-node d1" onclick="openDomain(1)">
-      <span class="d-icon">💫</span>
-      <span class="d-label">שפע ועשייה</span>
-    </div>
-    <div class="domain-node d2" onclick="openDomain(2)">
-      <span class="d-icon">💜</span>
-      <span class="d-label">אהבה ויחסים</span>
-    </div>
-    <div class="domain-node d3" onclick="openDomain(3)">
-      <span class="d-icon">🌿</span>
-      <span class="d-label">בריאות ואיזון</span>
-    </div>
-    <div class="domain-node d4" onclick="openDomain(4)">
-      <span class="d-icon">🏡</span>
-      <span class="d-label">בית ומשפחה</span>
-    </div>
-    <div class="domain-node d5" onclick="openDomain(5)">
-      <span class="d-icon">✨</span>
-      <span class="d-label">אני והזהות</span>
-    </div>
-  </div>
-
-  <p class="map-hint">← גלגלי בין התחומים →</p>
-
-  <div class="map-bottom-btns">
-    <button class="btn-ghost" onclick="goTo('s4')">🌈 העולם שאני בוחרת</button>
-    <button class="btn-ghost" onclick="goTo('s5')">🗓 נתיב 30 ימים</button>
+    <div style="height:40px;"></div>
   </div>
 </div>
 
-<!-- ===== SCREEN 3: DOMAIN CARD ===== -->
-<div id="s3" class="screen">
-  <button class="back-btn" onclick="goTo('s2')">← חזרה למפה</button>
-  <div class="domain-card-header">
-    <span class="domain-card-icon" id="dc-icon">🌟</span>
-    <h2 class="domain-card-title" id="dc-title">חלומות, ייעוד ויצירה</h2>
-  </div>
-  <div class="card-section">
-    <div class="card-section-label">מה קיים עכשיו</div>
-    <div class="card-section-text" id="dc-now"></div>
-  </div>
-  <div class="card-section">
-    <div class="card-section-label">מה מבקש להשתנות</div>
-    <div class="card-section-text" id="dc-change"></div>
-  </div>
-  <div class="card-section">
-    <div class="card-section-label">המסר עבורך</div>
-    <div class="card-section-text" id="dc-msg"></div>
-  </div>
-  <div class="card-section card-step">
-    <div class="card-section-label">✦ צעד קטן לימים הקרובים</div>
-    <div class="card-section-text" id="dc-step"></div>
-  </div>
-</div>
+<!-- PAGE 2: MAP -->
+<div class="page" id="page-map">
+  <div style="max-width:680px; margin:0 auto;">
+    <button class="back-btn" onclick="goTo('page-input', 1)">→ חזרה</button>
+    <div class="progress-bar">
+      <div class="progress-dot done"></div>
+      <div class="progress-dot current"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+    </div>
 
-<!-- ===== SCREEN 4: WORLD I CHOOSE ===== -->
-<div id="s4" class="screen">
-  <button class="back-btn" onclick="goTo('s2')">← חזרה למפה</button>
-  <div class="screen-header">
-    <h2>מפת העולם שאני בוחרת ליצור</h2>
-  </div>
-  <p class="dir-counter">בחרי <span id="dir-count">0</span> מתוך 3 כיוונים לחיזוק</p>
+    <h1>מפת העולם שלי</h1>
+    <p class="subtitle">הקלידי בכל כרטיסייה את היצוג, אחר כך גרר/י אותה למקום הנכון על המפה</p>
 
-  <div class="direction-grid" id="dir-grid"></div>
+    <!-- CARD PALETTE -->
+    <div id="card-palette" style="margin-bottom:18px;">
+      <div style="font-size:0.82rem; color:#9ca3af; text-align:center; margin-bottom:10px;">לחצ/י על קטגוריה להוספת כרטיסייה</div>
+      <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:14px;">
+        <button class="palette-btn belief"   onclick="addCard('belief','🚫 אמונה')">+ אמונה מגבילה</button>
+        <button class="palette-btn strength" onclick="addCard('strength','💪 חוזקה')">+ חוזקה</button>
+        <button class="palette-btn good-at"  onclick="addCard('good-at','✨ טוב ב')">+ טוב/ה ב</button>
+        <button class="palette-btn less-good"onclick="addCard('less-good','🤔 פחות ב')">+ פחות טוב/ה ב</button>
+        <button class="palette-btn emotion"  onclick="addCard('emotion','💜 רגש')">+ רגש</button>
+        <button class="palette-btn thought"  onclick="addCard('thought','💭 מחשבה')">+ מחשבה</button>
+        <button class="palette-btn person-pos"onclick="addCard('person-pos','👥 אדם +')">+ אדם חיובי</button>
+        <button class="palette-btn person-neg"onclick="addCard('person-neg','👥 אדם -')">+ אדם מאתגר</button>
+        <button class="palette-btn family"    onclick="addCard('family','👨‍👩‍👧 משפחה')">+ בן משפחה</button>
+        <button class="palette-btn friend"    onclick="addCard('friend','👫 חבר/ה')">+ חבר/ה</button>
+      </div>
+    </div>
 
-  <div class="chosen-visual" id="chosen-visual">
-    <p style="font-size:14px;color:var(--text-soft);margin-bottom:6px;">נתיבי האור שבחרת:</p>
-    <div class="chosen-paths" id="chosen-paths"></div>
-    <p style="font-size:13px;color:var(--text-dim);margin-top:14px;line-height:1.6;">
-      ההולוגרמה שלך מתעדכנת. שלושת הכיוונים האלה הם קרקע החיים שאת בוחרת לטפח.
+    <div id="map-container">
+      <div class="center-person">
+        <div style="font-size:0.85rem; font-weight:900; color:#ffe88a; line-height:1.2;">אני</div>
+        <input id="center-name" type="text" placeholder="שמ/י" style="background:transparent; border:none; border-bottom:1px solid rgba(255,232,138,0.5); outline:none; font-family:Heebo,sans-serif; font-size:0.75rem; color:#fff; width:64px; text-align:center; margin-top:3px;">
+      </div>
+      <div class="clock-num" style="top:6%; left:50%; transform:translateX(-50%);">12</div>
+      <div class="clock-num" style="bottom:6%; left:50%; transform:translateX(-50%);">6</div>
+      <div class="clock-num" style="right:6%; top:50%; transform:translateY(-50%);">3</div>
+      <div class="clock-num" style="left:6%; top:50%; transform:translateY(-50%);">9</div>
+    </div>
+
+    <p style="text-align:center; color:#9ca3af; font-size:0.82rem; margin:12px 0;">
+      גרור/י כל כרטיסייה למקום שמרגיש נכון
     </p>
-  </div>
 
-  <button class="btn-main" id="dir-btn" onclick="goTo('s5')" style="display:none;margin-top:8px;">
-    המשיכי לנתיב 30 הימים ←
-  </button>
+    <button class="btn btn-primary" onclick="goTo('page-feeling1', 3)">← איך זה מרגיש לראות את המפה?</button>
+    <div style="height:40px;"></div>
+  </div>
 </div>
 
-<!-- ===== SCREEN 5: 30-DAY PATH ===== -->
-<div id="s5" class="screen">
-  <button class="back-btn" onclick="goTo('s2')">← חזרה למפה</button>
-  <div class="screen-header">
-    <h2>הנתיב שלי ל־30 הימים</h2>
-    <p>שלושה צעדים שבחרנו יחד עבורך</p>
-  </div>
-
-  <div class="path-steps">
-    <div class="path-step">
-      <div class="step-num">1</div>
-      <div class="step-content">
-        <div class="step-title">חיבור יומי לכוונה</div>
-        <div class="step-desc">כל בוקר, לפני שאת פותחת את הטלפון, שאלי את עצמך: מה דבר אחד שאת בוחרת להרגיש היום?</div>
-      </div>
-      <div class="step-check" onclick="toggleCheck(this)"></div>
+<!-- PAGE 3: FEELING 1 -->
+<div class="page" id="page-feeling1">
+  <div style="max-width:500px; margin:0 auto;">
+    <button class="back-btn" onclick="goTo('page-map', 2)">→ חזרה למפה</button>
+    <div class="progress-bar">
+      <div class="progress-dot done"></div>
+      <div class="progress-dot done"></div>
+      <div class="progress-dot current"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
     </div>
-    <div class="path-step">
-      <div class="step-num">2</div>
-      <div class="step-content">
-        <div class="step-title">מחווה קטנה לעצמי</div>
-        <div class="step-desc">פעם בשבוע, עשי משהו אחד בלבד עבור עצמך. לא לאף אחד אחר. רק כי את ראויה לזה.</div>
-      </div>
-      <div class="step-check" onclick="toggleCheck(this)"></div>
-    </div>
-    <div class="path-step">
-      <div class="step-num">3</div>
-      <div class="step-content">
-        <div class="step-title">משפט מרפא לפני השינה</div>
-        <div class="step-desc">כתבי בנייד או ביומן משפט אחד שמתחיל ב: "אני מאמינה שאני יכולה..." ותני לו ללכת איתך לשינה.</div>
-      </div>
-      <div class="step-check" onclick="toggleCheck(this)"></div>
-    </div>
-  </div>
 
-  <div class="promise-box">
-    <div class="promise-label">💜 ההבטחה שלי לעצמי</div>
-    <textarea class="promise-textarea" placeholder="כתבי כאן את ההבטחה שאת לוקחת מהמפגש שלנו לחיים שלך..."></textarea>
-  </div>
+    <h1>איך את/ה מרגיש/ה?</h1>
+    <p class="subtitle">ראית את מפת העולם שלך. מה עולה בך?</p>
 
-  <button class="btn-main" onclick="goTo('s6')">המסר הקולי שלי ←</button>
+    <div class="card">
+      <label>תאר/י את ההרגשה שעולה כשאת/ה רואה את המפה:</label>
+      <textarea id="feeling1-desc" placeholder="לדוגמה: כובד, עצב, תחושה שדברים כבדים מדי, חרדה..."></textarea>
+      <label style="margin-top:14px; display:block;">🫀 איפה בגוף הפיזי שלך ממוקמת ההרגשה הזו?</label>
+      <textarea id="feeling1-body" placeholder="לדוגמה: בחזה, בגרון, בבטן, בכתפיים..." style="margin-top:6px;"></textarea>
+    </div>
+
+    <div class="card">
+      <h2 style="text-align:center; margin-bottom:14px;">מה עוצמת ההרגשה?</h2>
+      <p style="text-align:center; color:#9ca3af; font-size:0.85rem; margin-bottom:12px;">10 = עוצמה הכי גבוהה &nbsp;|&nbsp; 1 = לא מרגישים כלום</p>
+      <div class="rating-row" id="rating1-row">
+        <button class="rating-btn bad" onclick="selectRating('rating1', 10, this)">10</button>
+        <button class="rating-btn bad" onclick="selectRating('rating1', 9, this)">9</button>
+        <button class="rating-btn bad" onclick="selectRating('rating1', 8, this)">8</button>
+        <button class="rating-btn" onclick="selectRating('rating1', 7, this)">7</button>
+        <button class="rating-btn" onclick="selectRating('rating1', 6, this)">6</button>
+        <button class="rating-btn" onclick="selectRating('rating1', 5, this)">5</button>
+        <button class="rating-btn" onclick="selectRating('rating1', 4, this)">4</button>
+        <button class="rating-btn" onclick="selectRating('rating1', 3, this)">3</button>
+        <button class="rating-btn" onclick="selectRating('rating1', 2, this)">2</button>
+        <button class="rating-btn" onclick="selectRating('rating1', 1, this)">1</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <label style="margin-bottom:10px;">איזה זיכרון או תמונה מנטלית מחובר/ת להרגשה הזו?</label>
+      <textarea id="feeling1-memory" placeholder="תן/י לעצמך לחוש את הזיכרון הזה. זה יהיה הבסיס לכיול..."></textarea>
+
+      <div style="margin-top:18px; border-top:1px solid rgba(168,85,247,0.2); padding-top:14px;">
+        <div style="font-size:0.85rem; color:#c4b5fd; font-weight:700; margin-bottom:12px;">מאפייני הזיכרון (סאב-מודאליות)</div>
+
+        <div class="submod-row">
+          <span class="submod-label">🎨 צבע</span>
+          <div class="submod-opts">
+            <button class="submod-btn" onclick="toggleSub(this,'color')">צבעוני</button>
+            <button class="submod-btn" onclick="toggleSub(this,'color')">שחור-לבן</button>
+            <button class="submod-btn" onclick="toggleSub(this,'color')">חום</button>
+            <button class="submod-btn" onclick="toggleSub(this,'color')">אפור</button>
+          </div>
+        </div>
+
+        <div class="submod-row">
+          <span class="submod-label">🔍 חדות</span>
+          <div class="submod-opts">
+            <button class="submod-btn" onclick="toggleSub(this,'focus')">חד ובהיר</button>
+            <button class="submod-btn" onclick="toggleSub(this,'focus')">מטושטש</button>
+          </div>
+        </div>
+
+        <div class="submod-row">
+          <span class="submod-label">☀️ בהירות</span>
+          <div class="submod-opts">
+            <button class="submod-btn" onclick="toggleSub(this,'bright')">בהיר</button>
+            <button class="submod-btn" onclick="toggleSub(this,'bright')">כהה</button>
+          </div>
+        </div>
+
+        <div class="submod-row">
+          <span class="submod-label">👁️ נקודת מבט</span>
+          <div class="submod-opts">
+            <button class="submod-btn" onclick="toggleSub(this,'pov')">אני בתוך הזיכרון</button>
+            <button class="submod-btn" onclick="toggleSub(this,'pov')">משקיפ/ה מהצד</button>
+          </div>
+        </div>
+
+        <div class="submod-row">
+          <span class="submod-label">🎬 תנועה</span>
+          <div class="submod-opts">
+            <button class="submod-btn" onclick="toggleSub(this,'motion')">תמונה קפואה</button>
+            <button class="submod-btn" onclick="toggleSub(this,'motion')">תמונה חיה</button>
+          </div>
+        </div>
+
+        <div class="submod-row">
+          <span class="submod-label">🔊 שמע</span>
+          <div class="submod-opts">
+            <button class="submod-btn" onclick="toggleSub(this,'sound')">יש שמע</button>
+            <button class="submod-btn" onclick="toggleSub(this,'sound')">שקט</button>
+          </div>
+        </div>
+
+        <div class="submod-row">
+          <span class="submod-label">🌡️ טמפרטורה</span>
+          <div class="submod-opts">
+            <button class="submod-btn" onclick="toggleSub(this,'temp')">חם</button>
+            <button class="submod-btn" onclick="toggleSub(this,'temp')">חמים</button>
+            <button class="submod-btn" onclick="toggleSub(this,'temp')">קריר</button>
+            <button class="submod-btn" onclick="toggleSub(this,'temp')">קפוא</button>
+            <button class="submod-btn" onclick="toggleSub(this,'temp')">נייטרלי</button>
+          </div>
+        </div>
+
+        <div class="submod-row">
+          <span class="submod-label">📏 מרחק</span>
+          <div class="submod-opts">
+            <button class="submod-btn" onclick="toggleSub(this,'dist')">קרוב מאוד</button>
+            <button class="submod-btn" onclick="toggleSub(this,'dist')">קרוב</button>
+            <button class="submod-btn" onclick="toggleSub(this,'dist')">מרוחק</button>
+            <button class="submod-btn" onclick="toggleSub(this,'dist')">רחוק מאוד</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="emr-go-err" style="display:none; text-align:center; color:#f87171; font-size:0.9rem; margin-top:10px;">נא לבחור ציון עוצמה (1-10) לפני שממשיכים</div>
+    <button class="btn btn-primary" onclick="goToEMR()">← מתחילים כיול עיניים</button>
+    <div style="height:40px;"></div>
+  </div>
 </div>
 
-<!-- ===== SCREEN 6: AUDIO + CLOSING ===== -->
-<div id="s6" class="screen">
-  <div class="screen-header" style="margin-top:10px;">
-    <h2>המסר הקולי שלי</h2>
-  </div>
-
-  <div class="audio-card">
-    <div class="audio-title">🎙 הקלטה אישית מברוניה</div>
-    <div class="audio-desc">
-      הקלטה זו נוצרה עבורך כדי שתוכלי לשמוע את הכיוון שלך שוב ושוב,<br>
-      בכל רגע שתרצי לחזור למרחב הזה.
+<!-- PAGE 4: EMR WARNING -->
+<div class="page" id="page-emr-warning">
+  <div style="max-width:500px; margin:0 auto;">
+    <div class="progress-bar">
+      <div class="progress-dot done"></div>
+      <div class="progress-dot done"></div>
+      <div class="progress-dot done"></div>
+      <div class="progress-dot current"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
     </div>
-    <div class="audio-player">
-      <button class="audio-play-btn" onclick="toggleAudio(this)">▶</button>
-      <div class="audio-waves" id="audio-waves">
-        <!-- bars generated by JS -->
-      </div>
-      <span style="font-size:13px;color:var(--text-dim);white-space:nowrap;">0:42</span>
+
+    <h1>לפני שמתחילים</h1>
+
+    <div class="card" style="border-color:rgba(248,113,113,0.5); background:rgba(248,113,113,0.08);">
+      <div style="font-size:1.5rem; text-align:center; margin-bottom:10px;">⚠️</div>
+      <p style="color:#fca5a5; font-size:1rem; line-height:1.8; text-align:center; font-weight:600;">
+        תרגיל כיולי העיניים כולל תנועה חזותית חוזרת.<br><br>
+        אם את/ה סובל/ת מאפילפסיה, כאבי ראש כרוניים, או כל מצב נוירולוגי אחר, יש להימנע מתרגיל זה או לבצע אותו באחריותך האישית בלבד.<br><br>
+        במקרה של ספק, התייעצ/י עם רופא/ה לפני השימוש.
+      </p>
     </div>
-    <p class="audio-note">* ניתן לשלב כאן הקלטה אמיתית מברוניה בהמשך</p>
-  </div>
 
-  <div class="closing-card">
-    <span class="closing-icon">🌸</span>
-    <p class="closing-text">
-      המפה הזו נבנתה עבורך <em>באהבה</em>,<br>
-      כדי ללוות אותך בדרך שאת <em>בוחרת ליצור</em>.
-    </p>
-  </div>
+    <div style="text-align:center; margin-top:20px;">
+      <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; justify-content:center; color:#e9d5ff; font-size:0.95rem; font-weight:400;">
+        <input type="checkbox" id="emr-confirm-cb" style="width:20px; height:20px; margin-top:2px; accent-color:#a855f7; flex-shrink:0;">
+        קראתי והבנתי. אני בריא/ה נוירולוגית ומבצע/ת את התרגיל באחריותי האישית.
+      </label>
+    </div>
 
-  <button class="btn-main" onclick="goTo('s2')" style="margin-top:24px;">חזרה למפה שלי ✦</button>
+    <button class="btn btn-primary" style="margin-top:20px;" onclick="confirmAndStartEMR()">← מתחילים כיול עיניים</button>
+    <div style="height:40px;"></div>
+  </div>
 </div>
 
-</div><!-- end app -->
+<!-- PAGE 4: EMR -->
+<div class="page" id="emr-page">
+  <div class="progress-bar">
+    <div class="progress-dot done"></div>
+    <div class="progress-dot done"></div>
+    <div class="progress-dot done"></div>
+    <div class="progress-dot current"></div>
+    <div class="progress-dot"></div>
+    <div class="progress-dot"></div>
+  </div>
 
-<!-- ===== NAV BAR ===== -->
-<nav class="nav-bar" id="nav-bar" style="display:none;">
-  <button class="nav-item active" id="nav-s2" onclick="goTo('s2')">
-    <span class="ni">🔮</span>
-    <span>המפה</span>
-    <span class="ni-dot"></span>
-  </button>
-  <button class="nav-item" id="nav-s4" onclick="goTo('s4')">
-    <span class="ni">🌈</span>
-    <span>הבחירה</span>
-    <span class="ni-dot"></span>
-  </button>
-  <button class="nav-item" id="nav-s5" onclick="goTo('s5')">
-    <span class="ni">🗓</span>
-    <span>30 ימים</span>
-    <span class="ni-dot"></span>
-  </button>
-  <button class="nav-item" id="nav-s6" onclick="goTo('s6')">
-    <span class="ni">🎙</span>
-    <span>מסר קולי</span>
-    <span class="ni-dot"></span>
-  </button>
-</nav>
+  <h1>כיול דו-צדדי</h1>
+
+  <div style="display:flex; gap:10px; margin-bottom:20px; max-width:440px; width:100%;">
+    <button id="mode-eyes-btn" onclick="setEMRMode('eyes')"
+      style="flex:1; padding:12px; border-radius:12px; border:2px solid #a855f7; background:rgba(168,85,247,0.3); color:#e9d5ff; font-family:Heebo,sans-serif; font-size:0.95rem; font-weight:700; cursor:pointer;">
+      👁️ כיולי עיניים
+    </button>
+    <button id="mode-tap-btn" onclick="setEMRMode('tap')"
+      style="flex:1; padding:12px; border-radius:12px; border:2px solid rgba(168,85,247,0.3); background:transparent; color:#9ca3af; font-family:Heebo,sans-serif; font-size:0.95rem; font-weight:700; cursor:pointer;">
+      🦋 תיפוף כתפיים
+    </button>
+  </div>
+
+  <div id="emr-memory-display">
+    <div class="mem-label">הזיכרון שמחזיקים:</div>
+    <div class="mem-text" id="emr-memory-text"></div>
+    <div style="margin-top:8px; font-size:0.8rem; color:#9ca3af;">ציון התחלתי: <span id="emr-start-score" style="color:var(--gold-light); font-weight:700;"></span></div>
+  </div>
+
+  <!-- EYE MODE -->
+  <div id="emr-eyes-section">
+    <p style="color:#ffe88a; font-size:0.95rem; font-weight:700; text-align:center; margin-bottom:6px;">📱 העמידי את מכשיר הסלולר שלך בגובה העיניים</p>
+    <p style="color:#c4b5fd; font-size:0.9rem; text-align:center; margin-bottom:4px;">עקוב/י אחרי הכדור עם העיניים בלבד. הראש לא זז.</p>
+    <p style="color:#ffe88a; font-size:1rem; font-weight:700; text-align:center; margin-bottom:6px;">תנסי להחזיק את הזיכרון</p>
+    <div id="emr-phase-label" style="text-align:center; font-size:0.8rem; color:#9ca3af; margin-bottom:8px;"></div>
+    <div id="emr-track" style="height:200px; border-radius:16px;">
+      <div id="emr-ball"></div>
+    </div>
+  </div>
+
+  <!-- TAP MODE -->
+  <div id="emr-tap-section" style="display:none; text-align:center; max-width:440px; width:100%;">
+    <div style="background:var(--card); border:1px solid rgba(168,85,247,0.3); border-radius:16px; padding:20px; margin-bottom:16px;">
+      <div style="font-size:3rem; margin-bottom:10px;">🦋</div>
+      <p style="color:#e9d5ff; font-size:1rem; line-height:1.9; font-weight:600;">
+        הנח/י את יד <span style="color:#f9a8d4;">ימין</span> על כתף <span style="color:#60a5fa;">שמאל</span><br>
+        הנח/י את יד <span style="color:#60a5fa;">שמאל</span> על כתף <span style="color:#f9a8d4;">ימין</span><br>
+        <span style="color:#c4b5fd; font-size:0.9rem;">(חיבוק הפרפר)</span>
+      </p>
+      <div style="margin-top:16px; font-size:1rem; color:#ffe88a; font-weight:700;" id="tap-beat-display">
+        ימין... שמאל... ימין... שמאל...
+      </div>
+    </div>
+    <div style="font-size:0.85rem; color:#9ca3af;">תפקפ/י לאט ובקצב נוח. אין צורך לספור.</div>
+  </div>
+
+  <div id="emr-counter">0</div>
+  <p id="emr-counter-label" style="color:#9ca3af; font-size:0.85rem; margin-top:4px; text-align:center;">מעברים</p>
+
+  <div style="margin-top:30px; width:100%; max-width:400px;">
+    <button class="btn btn-primary" id="emr-stop-btn" onclick="stopEMR()">✓ סיימתי סבב, בדוק/י מצב</button>
+  </div>
+</div>
+
+<!-- PAGE 5: CHECK AFTER EMR -->
+<div class="page" id="page-check">
+  <div style="max-width:500px; margin:0 auto;">
+    <div class="progress-bar">
+      <div class="progress-dot done"></div>
+      <div class="progress-dot done"></div>
+      <div class="progress-dot done"></div>
+      <div class="progress-dot done"></div>
+      <div class="progress-dot current"></div>
+      <div class="progress-dot"></div>
+    </div>
+
+    <h1>בדיקה מחדש</h1>
+    <p class="subtitle">סיימת סבב של כיול. איך ההרגשה עכשיו?</p>
+
+    <div class="card">
+      <label>תאר/י את ההרגשה עכשיו:</label>
+      <textarea id="check-desc" placeholder="האם ירדה? השתנתה? מה מרגישים עכשיו?"></textarea>
+    </div>
+
+    <div class="card">
+      <label>✨ איזו הרגשה, תובנה או מחשבה חדשה נכנסה לגוף שלך?</label>
+      <textarea id="check-insight" placeholder="לדוגמה: קלילות, תקווה, הבנה חדשה, הרגשה שמשהו השתחרר..." style="margin-top:6px;"></textarea>
+    </div>
+
+    <div class="card">
+      <h2 style="text-align:center; margin-bottom:14px;">ציון עכשיו</h2>
+      <p style="text-align:center; color:#9ca3af; font-size:0.85rem; margin-bottom:4px;">10 = עוצמה הכי גבוהה &nbsp;|&nbsp; 1 = לא מרגישים כלום</p>
+      <div style="text-align:center; color:#9ca3af; font-size:0.85rem; margin-bottom:4px;">ציון קודם: <span id="prev-score-display" style="color:var(--gold-light); font-weight:700;"></span></div>
+      <div class="rating-row" id="rating2-row">
+        <button class="rating-btn bad" onclick="selectRating('rating2', 10, this)">10</button>
+        <button class="rating-btn bad" onclick="selectRating('rating2', 9, this)">9</button>
+        <button class="rating-btn bad" onclick="selectRating('rating2', 8, this)">8</button>
+        <button class="rating-btn" onclick="selectRating('rating2', 7, this)">7</button>
+        <button class="rating-btn" onclick="selectRating('rating2', 6, this)">6</button>
+        <button class="rating-btn" onclick="selectRating('rating2', 5, this)">5</button>
+        <button class="rating-btn" onclick="selectRating('rating2', 4, this)">4</button>
+        <button class="rating-btn" onclick="selectRating('rating2', 3, this)">3</button>
+        <button class="rating-btn" onclick="selectRating('rating2', 2, this)">2</button>
+        <button class="rating-btn" onclick="selectRating('rating2', 1, this)">1</button>
+      </div>
+    </div>
+
+    <div id="continue-emr-section" style="display:none;">
+      <div style="text-align:center; color:#f9a8d4; font-size:1rem; margin-bottom:12px;">
+        💜 עדיין יש עבודה. נמשיך עוד סבב.
+      </div>
+      <button class="btn btn-primary" onclick="continueEMR()">↺ סבב כיול נוסף</button>
+    </div>
+
+    <div id="proceed-section" style="display:none;">
+      <div style="text-align:center; color:#4ade80; font-size:1rem; margin-bottom:12px;">
+        ✨ יפה! ירד ל-<span id="current-score-text"></span>. ממשיכים לעדכון המפה.
+      </div>
+      <button class="btn btn-green" onclick="goToFinalMap()">← עדכני את מפת העולם</button>
+    </div>
+
+    <button class="btn" id="check-rate-btn" style="background:linear-gradient(135deg,#7c3aed,#a855f7); color:white; display:none;" onclick="evaluateScore()">בדיקת הציון</button>
+    <div style="height:40px;"></div>
+  </div>
+</div>
+
+<!-- PAGE 6: FINAL MAP + ENERGY -->
+<div class="page" id="page-final" style="padding-bottom:70px;">
+  <div style="max-width:640px; margin:0 auto;">
+    <div class="progress-bar">
+      <div class="progress-dot done"></div>
+      <div class="progress-dot done"></div>
+      <div class="progress-dot done"></div>
+      <div class="progress-dot done"></div>
+      <div class="progress-dot done"></div>
+      <div class="progress-dot current"></div>
+    </div>
+
+    <h1>עדכון המפה</h1>
+    <p class="subtitle">גרור/י את היצוגים למיקום החדש. בחר/י יצוג שזקוק לאנרגיה ושלח/י אליו.</p>
+
+    <div class="card" style="margin-bottom:14px;">
+      <h2 style="margin-bottom:10px; font-size:1rem;">💫 שליחת אנרגיה ליצוג</h2>
+      <p style="font-size:0.85rem; color:#9ca3af; margin-bottom:10px;">לחץ/י על יצוג במפה, אחר כך בחר/י אנרגיה לשלוח אליו:</p>
+      <div class="energy-buttons">
+        <button class="energy-btn energy-love" onclick="sendEnergy('אהבה')">💗 אהבה</button>
+        <button class="energy-btn energy-light" onclick="sendEnergy('אור')">✨ אור</button>
+        <button class="energy-btn energy-joy" onclick="sendEnergy('שמחה')">🌿 שמחה</button>
+        <button class="energy-btn energy-accept" onclick="sendEnergy('קבלה')">💙 קבלה</button>
+        <button class="energy-btn energy-release" onclick="sendEnergy('שחרור')">🔮 שחרור</button>
+        <button class="energy-btn energy-heal" onclick="sendEnergy('ריפוי')">🌊 ריפוי</button>
+      </div>
+      <div id="energy-feedback" style="text-align:center; color:var(--gold-light); font-size:0.9rem; margin-top:8px; min-height:20px;"></div>
+    </div>
+
+    <div id="map-container-2"></div>
+
+    <button class="btn btn-gold" style="margin:18px auto 4px; display:block;" onclick="document.getElementById('rating3-section').scrollIntoView({behavior:'smooth'})">← לציון ולמעבר הלאה</button>
+
+    <div class="card" id="rating3-section" style="margin-top:8px;">
+      <h2 style="text-align:center; margin-bottom:12px;">ציון סופי — איפה אנחנו עכשיו?</h2>
+      <p style="text-align:center; color:#9ca3af; font-size:0.85rem; margin-bottom:4px;">10 = עוצמה הכי גבוהה &nbsp;|&nbsp; 1 = לא מרגישים כלום</p>
+      <p style="text-align:center; color:#9ca3af; font-size:0.83rem; margin-bottom:4px;">
+        ציון התחלתי: <span id="final-start-score" style="color:#f87171; font-weight:700;"></span>
+        &nbsp;→&nbsp; ציון אחרי כיול: <span id="final-mid-score" style="color:var(--gold-light); font-weight:700;"></span>
+      </p>
+      <div class="rating-row" id="rating3-row">
+        <button class="rating-btn bad" onclick="selectRating('rating3', 10, this)">10</button>
+        <button class="rating-btn bad" onclick="selectRating('rating3', 9, this)">9</button>
+        <button class="rating-btn bad" onclick="selectRating('rating3', 8, this)">8</button>
+        <button class="rating-btn" onclick="selectRating('rating3', 7, this)">7</button>
+        <button class="rating-btn" onclick="selectRating('rating3', 6, this)">6</button>
+        <button class="rating-btn" onclick="selectRating('rating3', 5, this)">5</button>
+        <button class="rating-btn" onclick="selectRating('rating3', 4, this)">4</button>
+        <button class="rating-btn" onclick="selectRating('rating3', 3, this)">3</button>
+        <button class="rating-btn" onclick="selectRating('rating3', 2, this)">2</button>
+        <button class="rating-btn" onclick="selectRating('rating3', 1, this)">1</button>
+      </div>
+      <div id="final-err" style="display:none; text-align:center; color:#f87171; font-size:0.9rem; margin-top:8px;">נא לבחור ציון סופי לפני הסיום</div>
+      <button class="btn btn-gold" style="margin-top:14px;" onclick="showFinalResult()">← סיום ותוצאות</button>
+    </div>
+    <div style="height:20px;"></div>
+  </div>
+
+  <!-- כפתור נדבק בתחתית -->
+  <div style="position:fixed; bottom:0; left:0; right:0; background:linear-gradient(transparent, rgba(4,2,15,0.97) 30%); padding:12px 16px 20px; z-index:100; text-align:center;">
+    <button class="btn btn-gold" style="width:100%; max-width:400px;" onclick="document.getElementById('rating3-section').scrollIntoView({behavior:'smooth'})">← ציון ומעבר לתוצאות</button>
+  </div>
+</div>
+
+<!-- PAGE 7: RESULTS -->
+<div class="page" id="page-results">
+  <div style="max-width:640px; margin:0 auto; text-align:center;">
+
+    <h1 style="margin-bottom:4px;">🌟 מפת העולם החדשה שלי</h1>
+    <p style="color:#c4b5fd; font-size:1rem; margin-bottom:16px;">לאחר העיבוד, הכיול, והאנרגיות החדשות</p>
+
+    <!-- SCORE SUMMARY -->
+    <div style="display:flex; gap:10px; justify-content:center; align-items:center; margin-bottom:18px; flex-wrap:wrap;">
+      <div class="card" style="margin:0; flex:1; min-width:100px; padding:14px;">
+        <div style="font-size:0.8rem; color:#9ca3af; margin-bottom:4px;">עוצמה התחלתית</div>
+        <div style="font-size:2.2rem; font-weight:900; color:#f87171;" id="result-start"></div>
+      </div>
+      <div style="font-size:1.4rem; color:#9ca3af;">←</div>
+      <div class="card" style="margin:0; flex:1; min-width:100px; padding:14px;">
+        <div style="font-size:0.8rem; color:#9ca3af; margin-bottom:4px;">עוצמה כעת</div>
+        <div style="font-size:2.2rem; font-weight:900; color:#4ade80;" id="result-end"></div>
+      </div>
+    </div>
+
+    <div class="score-change" id="result-change" style="margin-bottom:14px;"></div>
+
+    <!-- ENERGIES SENT -->
+    <div class="card" style="margin-bottom:16px;" id="result-energies-card">
+      <div style="font-size:0.85rem; color:#c4b5fd; font-weight:700; margin-bottom:10px;">האנרגיות שנשלחו למפה</div>
+      <div id="result-energies-list" style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;"></div>
+    </div>
+
+    <!-- NEW MAP -->
+    <div style="font-size:0.9rem; color:#ffe88a; font-weight:700; margin-bottom:10px;">המפה שלי אחרי הטיפול</div>
+    <div id="result-map-container" style="position:relative; width:100%; max-width:560px; margin:0 auto 16px; aspect-ratio:1;
+      background:radial-gradient(ellipse at center,#1a0535 0%,#04020f 70%);
+      border:2px solid rgba(212,175,55,0.4); border-radius:50%; overflow:visible;">
+    </div>
+
+    <!-- NEW FEELING -->
+    <div class="card" style="margin-bottom:16px;" id="result-feeling-card">
+      <div style="font-size:0.85rem; color:#c4b5fd; font-weight:700; margin-bottom:6px;">ההרגשה החדשה שלי</div>
+      <div id="result-feeling-text" style="color:#e9d5ff; font-size:1rem; line-height:1.7;"></div>
+    </div>
+
+    <div class="card" style="background:rgba(74,222,128,0.06); border-color:rgba(74,222,128,0.3);">
+      <div style="font-size:0.95rem; color:#e9d5ff; line-height:1.8;" id="result-message"></div>
+    </div>
+
+    <button class="btn btn-gold" style="margin-top:20px;" onclick="saveReport()">💾 שמרי את מפת העולם שלי</button>
+    <button class="btn btn-primary" style="margin-top:12px;" onclick="startOver()">↺ סבב עיבוד חדש</button>
+    <div style="height:40px;"></div>
+  </div>
+</div>
 
 <script>
-/* ===== STARFIELD ===== */
-const canvas = document.getElementById('stars');
-const ctx = canvas.getContext('2d');
-let stars = [];
+// ===== STATE =====
+// ===== STEP-BY-STEP QUESTIONS =====
+const QUESTIONS = [
+  { id:'beliefs',    type:'multi-text', title:'🚫 האמונות המגבילות שלי על עצמי', hint:'רשמי כל אמונה בשורה נפרדת. אפשר כמה שתרצי.', placeholder:'לדוגמה: אני לא מספיקה, אני לא ראויה לאהבה...' },
+  { id:'strengths',  type:'multi-text', title:'✨ האמונות המקדמות שלי על עצמי', hint:'רשמי כל אמונה בשורה נפרדת. אפשר כמה שתרצי.', placeholder:'לדוגמה: אני חזקה, אני יצירתית, אני אוהבת...' },
+  { id:'belief-limiting-meaning', type:'text', title:'💭 מה האמונה המגבילה שלי בעצם אומרת עלייך?', hint:'תתחברי לתוך עצמך ותראי מה היא אומרת עלייך כאישה.', placeholder:'לדוגמה: שאני לא מספיקה טובה, שאני לא שווה...' },
+  { id:'belief-empowering-meaning', type:'text', title:'💜 מה האמונה המקדמת שלי אומרת עלייך?', hint:'מה היא אומרת עלייך כאישה?', placeholder:'לדוגמה: שאני מסוגלת, שאני ראויה לאהבה...' },
+  { id:'money',      type:'rating', title:'💰 עד כמה אני מרוצה מכמות וזרימת הכסף בחיי?', hint:'1 = כלל לא מרוצה, 10 = מרוצה מאוד' },
+  { id:'health',     type:'rating', title:'🌿 מה רמת הבריאות שלי?', hint:'1 = ממש לא בריאה, 10 = בריאות מצוינת' },
+  { id:'confidence', type:'rating', title:'💪 הביטחון שלי — כמה אני בטוחה ביכולות שלי?', hint:'1 = אין ביטחון, 10 = ביטחון מלא' },
+  { id:'value',      type:'rating', title:'👑 הערך שלי — כמה אני שווה?', hint:'1 = לא מרגישה ערך, 10 = מלאת ערך' },
+  { id:'image',      type:'rating', title:'🪞 הדימוי שלי — מה אני חושבת על הניראות שלי?', hint:'1 = לא אוהבת את עצמי, 10 = אוהבת את עצמי מאוד' },
+  { id:'satisfaction',type:'rating', title:'😊 רמת הסיפוק שלי — עד כמה אני שמחה בחלקי?', hint:'1 = כלל לא מסופקת, 10 = מסופקת מאוד' },
+  { id:'people',     type:'text', title:'👥 האנשים המשמעותיים בחיי', hint:'מי האנשים שהכי משפיעים עלייך — לטובה ולרעה?', placeholder:'לדוגמה: אמא שלי, בן/בת זוגי, חברה קרובה...' },
+  { id:'emotions',   type:'emotions', title:'💜 מה הרגש הדומיננטי בחיי?', hint:'1 = כמעט לא קיים, 10 = נוכח מאוד' },
+  { id:'values',     type:'text', title:'⭐ מהם הערכים שלי?', hint:'מה הכי חשוב לך שיהיה בחיים שלך?', placeholder:'לדוגמה: משפחה, חירות, אהבה, יצירה, צדק...' },
+  { id:'qualities',  type:'text', title:'🌟 מהן התכונות הכי טובות שלי?', placeholder:'לדוגמה: אמפתיה, יצירתיות, נחישות, חום...' },
+  { id:'weaknesses', type:'text', title:'🤍 מהם החסרונות שלי?', hint:'ללא שיפוטיות — ידיעה היא כוח.', placeholder:'לדוגמה: חוסר סבלנות, פרפקציוניזם, קושי בגבולות...' },
+  { id:'gold',       type:'gold', title:'✨ שאלת הזהב', hint:'' },
+  { id:'commitment', type:'commitment', title:'', hint:'' },
+];
 
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+let qStep = 0;
+const qData = {};
+
+function qRender() {
+  const q = QUESTIONS[qStep];
+  const total = QUESTIONS.length;
+  const pBar = document.getElementById('q-progress');
+  pBar.innerHTML = QUESTIONS.map((_, i) => `<div style="width:${Math.floor(100/total)-1}%; height:6px; border-radius:3px; background:${i < qStep ? '#a855f7' : i === qStep ? '#d4af37' : '#d8b4fe55'};"></div>`).join('');
+
+  const c = document.getElementById('q-container');
+  const cardStyle = 'background:#fff; border-radius:20px; padding:28px 22px; box-shadow:0 4px 24px rgba(168,85,247,0.12); border:1.5px solid rgba(168,85,247,0.15);';
+  const titleStyle = 'font-size:1.25rem; font-weight:900; color:#5b21b6; margin-bottom:8px; line-height:1.4;';
+  const hintStyle = 'font-size:0.9rem; color:#9ca3af; margin-bottom:18px; line-height:1.5;';
+  const inputStyle = 'width:100%; background:#f5f0ff; border:1.5px solid #d8b4fe; border-radius:12px; color:#3b0764; font-family:Heebo,sans-serif; font-size:1rem; padding:12px 14px; resize:vertical; outline:none; min-height:90px; box-sizing:border-box; direction:rtl;';
+
+  if (q.type === 'multi-text' || q.type === 'text') {
+    c.innerHTML = `<div style="${cardStyle}">
+      <div style="${titleStyle}">${q.title}</div>
+      ${q.hint ? `<div style="${hintStyle}">${q.hint}</div>` : ''}
+      <textarea id="q-input" style="${inputStyle}${q.type==='text'?'min-height:110px;':''}" placeholder="${q.placeholder||''}">${qData[q.id]||''}</textarea>
+    </div>`;
+  } else if (q.type === 'rating') {
+    const cur = qData[q.id] || null;
+    c.innerHTML = `<div style="${cardStyle}">
+      <div style="${titleStyle}">${q.title}</div>
+      <div style="${hintStyle}">${q.hint}</div>
+      <div style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center;">
+        ${[1,2,3,4,5,6,7,8,9,10].map(n => `<button onclick="qRate('${q.id}',${n})" id="qr-${q.id}-${n}" style="width:48px;height:48px;border-radius:50%;border:2px solid #a855f7;background:${cur===n?'#a855f7':'transparent'};color:${cur===n?'#fff':'#7c3aed'};font-family:Heebo,sans-serif;font-size:1rem;font-weight:700;cursor:pointer;">${n}</button>`).join('')}
+      </div>
+    </div>`;
+  } else if (q.type === 'emotions') {
+    const emo = qData['emotions'] || {};
+    c.innerHTML = `<div style="${cardStyle}">
+      <div style="${titleStyle}">${q.title}</div>
+      <div style="${hintStyle}">${q.hint}</div>
+      ${[{k:'anger',label:'😤 כעס'},{k:'sadness',label:'😢 עצב'},{k:'joy',label:'😊 שמחה'},{k:'love',label:'❤️ אהבה'}].map(e => `
+        <div style="margin-bottom:18px;">
+          <div style="font-size:1rem;font-weight:700;color:#5b21b6;margin-bottom:8px;">${e.label}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
+            ${[1,2,3,4,5,6,7,8,9,10].map(n => `<button onclick="qRateEmo('${e.k}',${n})" id="qemo-${e.k}-${n}" style="width:42px;height:42px;border-radius:50%;border:2px solid #a855f7;background:${(emo[e.k]===n)?'#a855f7':'transparent'};color:${(emo[e.k]===n)?'#fff':'#7c3aed'};font-family:Heebo,sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;">${n}</button>`).join('')}
+          </div>
+        </div>`).join('')}
+    </div>`;
+  } else if (q.type === 'gold') {
+    c.innerHTML = `<div style="${cardStyle}; background:linear-gradient(135deg,#fffbeb,#fef3c7); border:2px solid #d4af37;">
+      <div style="font-size:1.4rem;font-weight:900;color:#b45309;margin-bottom:14px;text-align:center;">✨ שאלת הזהב</div>
+      <div style="${hintStyle} color:#92400e; text-align:center; font-size:1rem;">ענ/י מהלב, ללא פילטרים</div>
+      <div style="font-size:1rem;font-weight:700;color:#92400e;margin-bottom:8px;">מה הייתי רוצה שיהיה בחיים שלי?</div>
+      <textarea id="q-want" style="${inputStyle} background:#fffbeb; border-color:#f59e0b;" placeholder="חלומות, רצונות, שאיפות...">${qData['gold-want']||''}</textarea>
+      <div style="font-size:1rem;font-weight:700;color:#92400e;margin:14px 0 8px;">מה הייתי רוצה לשחרר מהחיים שלי?</div>
+      <textarea id="q-release" style="${inputStyle} background:#fffbeb; border-color:#f59e0b;" placeholder="דפוסים, קשרים, תחושות, אמונות...">${qData['gold-release']||''}</textarea>
+    </div>`;
+  } else if (q.type === 'commitment') {
+    c.innerHTML = `<div style="${cardStyle}; background:linear-gradient(135deg,#f5f0ff,#ede8fa); border:2px solid #a855f7; text-align:center;">
+      <div style="font-size:2rem;margin-bottom:12px;">💜</div>
+      <div style="font-size:1.1rem;font-weight:900;color:#5b21b6;margin-bottom:16px;line-height:1.6;">אני מבינה שכדי ליצור שינוי בחיי,<br>עלי ליצור שינוי בצורת החשיבה שלי.</div>
+      <div style="font-size:1rem;color:#7c3aed;margin-bottom:24px;line-height:1.7;">על ידי לקיחת החלטה, מחויבות ואחריות —<br>אני מוכנה לצאת למסע לשינוי, ריפוי, שחרור ושידרוג של החיים שלי.</div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button onclick="qData.commitment='yes'; document.querySelectorAll('.commit-btn').forEach(b=>b.style.background='transparent'); this.style.background='#a855f7'; this.style.color='#fff';" class="commit-btn" style="padding:12px 28px;border-radius:50px;border:2px solid #a855f7;background:${qData.commitment==='yes'?'#a855f7':'transparent'};color:${qData.commitment==='yes'?'#fff':'#7c3aed'};font-family:Heebo,sans-serif;font-size:1rem;font-weight:800;cursor:pointer;">כן, אני מוכנה ✨</button>
+        <button onclick="qData.commitment='later'; document.querySelectorAll('.commit-btn').forEach(b=>b.style.background='transparent'); this.style.background='#e9d5ff'; this.style.color='#5b21b6';" class="commit-btn" style="padding:12px 28px;border-radius:50px;border:2px solid #d8b4fe;background:${qData.commitment==='later'?'#e9d5ff':'transparent'};color:${qData.commitment==='later'?'#5b21b6':'#7c3aed'};font-family:Heebo,sans-serif;font-size:1rem;font-weight:700;cursor:pointer;">אצטרך לחשוב</button>
+      </div>
+    </div>`;
+  }
+
+  document.getElementById('q-back').style.display = qStep > 0 ? 'block' : 'none';
+  const nextBtn = document.getElementById('q-next');
+  nextBtn.textContent = qStep === total - 1 ? '✨ צרי את מפת העולם שלי' : 'המשך ←';
 }
-function initStars() {
-  stars = [];
-  for (let i = 0; i < 120; i++) {
-    stars.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      r: Math.random() * 1.4 + 0.2,
-      o: Math.random(),
-      speed: Math.random() * 0.008 + 0.003,
-      phase: Math.random() * Math.PI * 2
+
+function qRate(id, n) {
+  qData[id] = n;
+  document.querySelectorAll(`[id^="qr-${id}-"]`).forEach(b => { b.style.background='transparent'; b.style.color='#7c3aed'; });
+  const btn = document.getElementById(`qr-${id}-${n}`);
+  if (btn) { btn.style.background='#a855f7'; btn.style.color='#fff'; }
+}
+
+function qRateEmo(key, n) {
+  if (!qData['emotions']) qData['emotions'] = {};
+  qData['emotions'][key] = n;
+  document.querySelectorAll(`[id^="qemo-${key}-"]`).forEach(b => { b.style.background='transparent'; b.style.color='#7c3aed'; });
+  const btn = document.getElementById(`qemo-${key}-${n}`);
+  if (btn) { btn.style.background='#a855f7'; btn.style.color='#fff'; }
+}
+
+function qSaveCurrent() {
+  const q = QUESTIONS[qStep];
+  if (q.type === 'multi-text' || q.type === 'text') {
+    const el = document.getElementById('q-input');
+    if (el) qData[q.id] = el.value;
+  } else if (q.type === 'gold') {
+    const w = document.getElementById('q-want'); if (w) qData['gold-want'] = w.value;
+    const r = document.getElementById('q-release'); if (r) qData['gold-release'] = r.value;
+  }
+}
+
+function qNext() {
+  qSaveCurrent();
+  if (qStep < QUESTIONS.length - 1) {
+    qStep++;
+    qRender();
+    window.scrollTo(0, 0);
+  } else {
+    // copy data to old field IDs for goToMap compatibility
+    ['beliefs','strengths','good-at','less-good','emotions','thoughts','people-pos','people-neg'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && qData[id]) el.value = qData[id];
+    });
+    goToMap();
+  }
+}
+
+function qPrev() {
+  qSaveCurrent();
+  if (qStep > 0) { qStep--; qRender(); window.scrollTo(0, 0); }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  qRender();
+});
+
+const state = {
+  reps: [],
+  rating1: null,
+  rating2: null,
+  rating3: null,
+  feeling1Desc: '',
+  feeling1Memory: '',
+  selectedRepForEnergy: null,
+  energiesSent: [],
+  energizedReps: new Set(),
+  emrMode: 'eyes',
+  emrRounds: 0,
+  emrInterval: null,
+  emrPos: 0,
+  emrDir: 1,
+  emrCount: 0,
+};
+
+const LEGEND = [
+  { cls: 'belief',    label: '🚫 מגביל', key: 'beliefs' },
+  { cls: 'strength',  label: '💪 חוזקה', key: 'strengths' },
+  { cls: 'good-at',   label: '✨ טוב ב', key: 'good-at' },
+  { cls: 'less-good', label: '🤔 פחות ב', key: 'less-good' },
+  { cls: 'emotion',   label: '💜 רגש',   key: 'emotions' },
+  { cls: 'thought',   label: '💭 מחשבה', key: 'thoughts' },
+  { cls: 'person-pos',label: '👥+ אדם',  key: 'people-pos' },
+  { cls: 'person-neg',label: '👥- אדם',  key: 'people-neg' },
+];
+
+// ===== NAVIGATION =====
+function goTo(pageId, dotIndex) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  window.scrollTo(0, 0);
+  updateProgress(pageId, dotIndex);
+}
+
+function updateProgress(pageId, dotIndex) {
+  const page = document.getElementById(pageId);
+  if (!page) return;
+  const dots = page.querySelectorAll('.progress-dot');
+  dots.forEach((d, i) => {
+    d.classList.remove('done', 'current');
+    if (i < dotIndex - 1) d.classList.add('done');
+    else if (i === dotIndex - 1) d.classList.add('current');
+  });
+}
+
+// ===== PAGE 1 → PAGE 2 =====
+function goToMap() {
+  goTo('page-map', 2);
+}
+
+let cardCounter = 0;
+
+function addCard(cls, label) {
+  const container = document.getElementById('map-container');
+  const idx = cardCounter++;
+
+  const tag = document.createElement('div');
+  tag.className = 'rep-tag ' + cls;
+  tag.dataset.index = idx;
+  tag.style.position = 'absolute';
+  tag.style.transform = 'translate(-50%,-50%)';
+
+  // Random position in circle area
+  const angle = Math.random() * 2 * Math.PI;
+  const radius = 0.25 + Math.random() * 0.12;
+  const x = 0.5 + radius * Math.cos(angle);
+  const y = 0.5 + radius * Math.sin(angle);
+  tag.style.left = (x * 100) + '%';
+  tag.style.top  = (y * 100) + '%';
+
+  // Delete button
+  const del = document.createElement('button');
+  del.className = 'del-btn';
+  del.textContent = '×';
+  del.onclick = (e) => { e.stopPropagation(); tag.remove(); syncReps(); };
+
+  // Editable input
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.placeholder = label;
+  inp.addEventListener('change', syncReps);
+  inp.addEventListener('blur', syncReps);
+
+  tag.appendChild(del);
+  tag.appendChild(inp);
+  container.appendChild(tag);
+
+  makeDraggable(tag, idx, container);
+  inp.focus();
+  syncReps();
+}
+
+function syncReps() {
+  state.reps = [];
+  document.querySelectorAll('#map-container .rep-tag').forEach(tag => {
+    const inp = tag.querySelector('input');
+    const text = inp ? inp.value.trim() : tag.textContent.trim();
+    const cls = Array.from(tag.classList).find(c => c !== 'rep-tag') || 'belief';
+    // קריאה מה-CSS ישירות (עובד גם כשהדף מוסתר)
+    const x = parseFloat(tag.style.left) / 100 || 0.5;
+    const y = parseFloat(tag.style.top)  / 100 || 0.5;
+    state.reps.push({ cls, text: text || '...', x, y });
+  });
+}
+
+function renderMap(containerId) {
+  const container = document.getElementById(containerId);
+
+  Array.from(container.querySelectorAll('.rep-tag')).forEach(el => el.remove());
+  if (!container.querySelector('.center-person')) {
+    const c = document.createElement('div');
+    c.className = 'center-person';
+    const nameVal = document.getElementById('center-name') ? document.getElementById('center-name').value.trim() : '';
+    c.innerHTML = '<div style="font-size:0.85rem;font-weight:900;color:#ffe88a;">אני</div>' +
+      (nameVal ? '<div style="font-size:0.75rem;color:#e9d5ff;">'+nameVal+'</div>' : '');
+    container.appendChild(c);
+    ['12','3','6','9'].forEach((n, i) => {
+      const pos = [
+        'top:6%;left:50%;transform:translateX(-50%)',
+        'right:6%;top:50%;transform:translateY(-50%)',
+        'bottom:6%;left:50%;transform:translateX(-50%)',
+        'left:6%;top:50%;transform:translateY(-50%)'
+      ][i];
+      const d = document.createElement('div');
+      d.className = 'clock-num';
+      d.textContent = n;
+      d.style.cssText = pos;
+      container.appendChild(d);
     });
   }
-}
-function drawStars(t) {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  stars.forEach(s => {
-    const o = 0.25 + 0.55 * Math.abs(Math.sin(t * s.speed + s.phase));
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255,255,255,${o})`;
-    ctx.fill();
+
+  syncReps();
+  state.reps.forEach((rep, i) => {
+    const tag = document.createElement('div');
+    tag.className = 'rep-tag ' + rep.cls;
+    tag.textContent = rep.text;
+    tag.dataset.index = i;
+    tag.style.left = (rep.x * 100) + '%';
+    tag.style.top  = (rep.y * 100) + '%';
+    tag.style.transform = 'translate(-50%, -50%)';
+    tag.style.cursor = 'grab';
+    tag.style.paddingLeft = '18px';
+    const del = document.createElement('span');
+    del.textContent = '×';
+    del.style.cssText = 'position:absolute;top:-8px;left:-8px;width:22px;height:22px;background:rgba(0,0,0,0.7);border-radius:50%;font-size:1rem;line-height:22px;text-align:center;cursor:pointer;z-index:30;';
+    del.onclick = (e) => { e.stopPropagation(); tag.remove(); state.reps[i] = null; };
+    tag.appendChild(del);
+    makeDraggableRep(tag, i, container);
+    container.appendChild(tag);
   });
-  requestAnimationFrame(drawStars);
 }
-resizeCanvas();
-initStars();
-requestAnimationFrame(drawStars);
-window.addEventListener('resize', () => { resizeCanvas(); initStars(); });
 
-/* ===== AUDIO WAVES ===== */
-const wavesEl = document.getElementById('audio-waves');
-for (let i = 0; i < 22; i++) {
-  const b = document.createElement('div');
-  b.className = 'wave-bar';
-  const h = Math.random() * 20 + 4;
-  b.style.height = h + 'px';
-  wavesEl.appendChild(b);
+function makeDraggableRep(el, index, container) {
+  let startX, startY, startLeft, startTop, moved = false, active = false;
+
+  function onDown(e) {
+    active = true; moved = false;
+    const touch = e.touches ? e.touches[0] : e;
+    startX = touch.clientX; startY = touch.clientY;
+    const rect = el.getBoundingClientRect();
+    const cRect = container.getBoundingClientRect();
+    startLeft = rect.left + rect.width / 2 - cRect.left;
+    startTop  = rect.top  + rect.height / 2 - cRect.top;
+    el.style.zIndex = 20;
+    el.style.cursor = 'grabbing';
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('mouseup',   onUp);
+    document.addEventListener('touchend',  onUp);
+    e.preventDefault();
+  }
+
+  function onMove(e) {
+    if (!active) return;
+    const touch = e.touches ? e.touches[0] : e;
+    const dx = touch.clientX - startX, dy = touch.clientY - startY;
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) moved = true;
+    if (!moved) return;
+    const cRect = container.getBoundingClientRect();
+    const newL = (startLeft + dx) / cRect.width  * 100;
+    const newT = (startTop  + dy) / cRect.height * 100;
+    el.style.left = newL + '%';
+    el.style.top  = newT + '%';
+    if (state.reps[index]) { state.reps[index].x = newL / 100; state.reps[index].y = newT / 100; }
+  }
+
+  function onUp() {
+    if (!active) return;
+    active = false;
+    el.style.zIndex = '';
+    el.style.cursor = 'grab';
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('touchmove', onMove);
+    document.removeEventListener('mouseup',   onUp);
+    document.removeEventListener('touchend',  onUp);
+    if (!moved) selectRepForEnergy(index, el);
+  }
+
+  el.addEventListener('mousedown',  onDown, { passive: false });
+  el.addEventListener('touchstart', onDown, { passive: false });
 }
-let audioPlaying = false;
-let waveInterval;
-function toggleAudio(btn) {
-  audioPlaying = !audioPlaying;
-  btn.textContent = audioPlaying ? '⏸' : '▶';
-  const bars = wavesEl.querySelectorAll('.wave-bar');
-  if (audioPlaying) {
-    waveInterval = setInterval(() => {
-      bars.forEach(b => {
-        const h = Math.random() * 22 + 4;
-        b.style.height = h + 'px';
-        b.style.background = `rgba(${140+Math.random()*80},${80+Math.random()*60},${220+Math.random()*35},0.7)`;
-        b.style.transition = 'height 0.12s ease';
-      });
-    }, 130);
+
+function makeDraggable(el, index, container) {
+  let startX, startY, startLeft, startTop, isDragging = false;
+
+  function onDown(e) {
+    isDragging = true;
+    const touch = e.touches ? e.touches[0] : e;
+    startX = touch.clientX;
+    startY = touch.clientY;
+    const rect = el.getBoundingClientRect();
+    startLeft = rect.left + rect.width / 2 - container.getBoundingClientRect().left;
+    startTop  = rect.top  + rect.height / 2 - container.getBoundingClientRect().top;
+    el.style.zIndex = 20;
+    e.preventDefault();
+  }
+
+  function onMove(e) {
+    if (!isDragging) return;
+    const touch = e.touches ? e.touches[0] : e;
+    const dx = touch.clientX - startX;
+    const dy = touch.clientY - startY;
+    const cRect = container.getBoundingClientRect();
+    const newLeft = Math.max(0, Math.min(cRect.width,  startLeft + dx));
+    const newTop  = Math.max(0, Math.min(cRect.height, startTop  + dy));
+    el.style.left = (newLeft / cRect.width  * 100) + '%';
+    el.style.top  = (newTop  / cRect.height * 100) + '%';
+    state.reps[index].x = newLeft / cRect.width;
+    state.reps[index].y = newTop  / cRect.height;
+    e.preventDefault();
+  }
+
+  function onUp() {
+    isDragging = false;
+    el.style.zIndex = 5;
+  }
+
+  el.addEventListener('mousedown', onDown);
+  el.addEventListener('touchstart', onDown, { passive: false });
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('touchmove', onMove, { passive: false });
+  document.addEventListener('mouseup', onUp);
+  document.addEventListener('touchend', onUp);
+}
+
+function renderLegend() {
+  const leg = document.getElementById('map-legend');
+  leg.innerHTML = '';
+  LEGEND.forEach(({ cls, label }) => {
+    if (state.reps.some(r => r.cls === cls)) {
+      const el = document.createElement('span');
+      el.className = 'legend-item rep-tag ' + cls;
+      el.style.position = 'static';
+      el.style.transform = 'none';
+      el.style.cursor = 'default';
+      el.style.maxWidth = 'none';
+      el.textContent = label;
+      leg.appendChild(el);
+    }
+  });
+}
+
+// ===== RATING =====
+function selectRating(key, val, btn) {
+  state[key] = val;
+  const row = btn.closest('.rating-row');
+  row.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+
+  // Show continue button on check page
+  if (key === 'rating2') {
+    document.getElementById('check-rate-btn').style.display = 'block';
+    evaluateScore();
+  }
+}
+
+function evaluateScore() {
+  if (!state.rating2) return;
+  const start = state.rating1;
+  const now = state.rating2;
+  const cont = document.getElementById('continue-emr-section');
+  const proc = document.getElementById('proceed-section');
+  const prev = document.getElementById('prev-score-display');
+  prev.textContent = start;
+
+  if (now <= 3 || now <= start - 3) {
+    cont.style.display = 'none';
+    proc.style.display = 'block';
+    document.getElementById('current-score-text').textContent = now;
   } else {
-    clearInterval(waveInterval);
-    bars.forEach(b => { b.style.height = (Math.random()*18+4)+'px'; b.style.background = 'rgba(192,132,252,0.35)'; });
+    cont.style.display = 'block';
+    proc.style.display = 'none';
+  }
+  document.getElementById('check-rate-btn').style.display = 'none';
+}
+
+// ===== EMR =====
+function goToEMR() {
+  if (!state.rating1) {
+    const err = document.getElementById('emr-go-err');
+    if (err) { err.style.display = 'block'; err.scrollIntoView({behavior:'smooth'}); }
+    return;
+  }
+  const err = document.getElementById('emr-go-err');
+  if (err) err.style.display = 'none';
+  const memory = document.getElementById('feeling1-memory').value.trim() ||
+                 document.getElementById('feeling1-desc').value.trim() ||
+                 'ההרגשה שעלתה מהמפה';
+  state.feeling1Memory = memory;
+  document.getElementById('emr-memory-text').textContent = memory;
+  document.getElementById('emr-start-score').textContent = state.rating1;
+  document.getElementById('emr-confirm-cb').checked = false;
+  goTo('page-emr-warning', 4);
+}
+
+function confirmAndStartEMR() {
+  if (!document.getElementById('emr-confirm-cb').checked) {
+    alert('נא לאשר שקראת את האזהרה');
+    return;
+  }
+  goTo('emr-page', 4);
+  startEMR();
+}
+
+function setEMRMode(mode) {
+  state.emrMode = mode;
+  const eyesBtn = document.getElementById('mode-eyes-btn');
+  const tapBtn  = document.getElementById('mode-tap-btn');
+  const eyesSec = document.getElementById('emr-eyes-section');
+  const tapSec  = document.getElementById('emr-tap-section');
+  const counterLabel = document.getElementById('emr-counter-label');
+  if (state.emrInterval) { cancelAnimationFrame(state.emrInterval); state.emrInterval = null; }
+  if (mode === 'eyes') {
+    eyesBtn.style.background = 'rgba(168,85,247,0.3)'; eyesBtn.style.borderColor = '#a855f7'; eyesBtn.style.color = '#e9d5ff';
+    tapBtn.style.background = 'transparent'; tapBtn.style.borderColor = 'rgba(168,85,247,0.3)'; tapBtn.style.color = '#9ca3af';
+    eyesSec.style.display = 'block'; tapSec.style.display = 'none';
+    counterLabel.textContent = 'מעברים';
+    startEMR();
+  } else {
+    tapBtn.style.background = 'rgba(168,85,247,0.3)'; tapBtn.style.borderColor = '#a855f7'; tapBtn.style.color = '#e9d5ff';
+    eyesBtn.style.background = 'transparent'; eyesBtn.style.borderColor = 'rgba(168,85,247,0.3)'; eyesBtn.style.color = '#9ca3af';
+    eyesSec.style.display = 'none'; tapSec.style.display = 'block';
+    counterLabel.textContent = 'שניות';
+    startTapTimer();
   }
 }
 
-/* ===== DOMAIN DATA ===== */
-const domains = [
-  {
-    icon: '🌟', title: 'חלומות, ייעוד ויצירה', color: '#f9a8d4',
-    now: 'יש בך חלומות שעוד לא הוצאת מהמגירה. יצירתיות עצומה שמחפשת פרוק ומרחב. חלק ממך כבר יודע מה הייעוד שלך.',
-    change: 'הפחד מ"לא תצליחי" מבקש לפנות מקום לאמון. הקול הביקורתי שאומר "זה לא מציאותי" מוכן להרפות.',
-    msg: 'כל דבר שיצרת עד היום היה אימון. העכשיו הוא הרגע שהחלום מתבגר לכיוון.',
-    step: 'הקדישי 20 דקות ביום רק לדבר שמשמח אותך ליצור. בלי תוצר, בלי מטרה. רק ליצור.'
-  },
-  {
-    icon: '💫', title: 'שפע, פרנסה ועשייה', color: '#d4af37',
-    now: 'את עובדת קשה ומביאה ערך לאחרים. השפע מגיע, גם אם לפעמים הזרימה לא מרגישה אחידה.',
-    change: 'אמונה שאת ראויה לקבל כמו שאת נותנת מבקשת לחזק. יש מקום להרחיב את מה שאת מציעה לעולם.',
-    msg: 'השפע זורם לכיוון שבו יש אמון. ככל שתאמיני יותר בערך שלך, הדלתות ייפתחו בצורה שעוד לא דמיינת.',
-    step: 'כתבי שלושה דברים שאת מצוינת בהם מקצועית ואישית. שמרי אותם איפה שתראי אותם כל יום.'
-  },
-  {
-    icon: '💜', title: 'אהבה ומערכות יחסים', color: '#a855f7',
-    now: 'יש בחייך קשרים שמזינים אותך ומחברים אותך לעצמך. גם קשרים שמאתגרים אותך ומלמדים אותך עליך.',
-    change: 'גבולות בריאים מבקשים לצמוח. היכולת לקבל אהבה כמו שאת נותנת אהבה מוכנה להתרחב.',
-    msg: 'כשאת אוהבת את עצמך מהמקום האמיתי, הקשרים שלך משנים צורה. אהבה אמיתית מתחילה מבפנים.',
-    step: 'שאלי שאלה אחת אנשים קרובים שלך השבוע: "מה מחזק אותי בעיניך?" ולקחי את זה פנימה.'
-  },
-  {
-    icon: '🌿', title: 'בריאות, רוגע ואיזון', color: '#34d399',
-    now: 'גופך מדבר אלייך כל הזמן. לפעמים את שומעת אותו, לפעמים החיים עסוקים מדי. הגוף שלך זוכר כל דבר.',
-    change: 'מנוחה שאינה מרגישה כ"בזבוז זמן" מבקשת להיכנס לחייך. גוף שנח יכול לעשות יותר, לא פחות.',
-    msg: 'רוגע אינו פינוק. הוא הדלק שממנו הכל מתחיל. כשאת שלמה עם עצמך, הכל זורם יותר בקלות.',
-    step: 'בחרי דבר אחד שעושה טוב לגופך ולנפשך, ועשי אותו שלוש פעמים השבוע הקרוב בלי להצטדק.'
-  },
-  {
-    icon: '🏡', title: 'בית ומשפחה', color: '#fbbf24',
-    now: 'ביתך הוא מרחב שמחזיק אותך ואת יקיריך. יש בו חום, היסטוריה, ולפעמים גם מתחים שמבקשים הכלה.',
-    change: 'שלום פנימי בתוך הבית מבקש לצמוח. תקשורת מהלב, פחות מהעייפות, פותחת דלתות חדשות.',
-    msg: 'הבית הפנימי שלך הוא השלווה שאת נושאת בתוכך לכל מקום. כשהוא שלם, כל שאר מעגלי החיים נהנים ממנו.',
-    step: 'בחרי אדם אחד בביתך והגידי לו משהו שמודה לו על נוכחותו בחייך. בפשטות. מהלב.'
-  },
-  {
-    icon: '✨', title: 'אני והזהות שלי', color: '#c084fc',
-    now: 'יש בך כוח פנימי עצום שעוד לא קיבל את ביטויו המלא. חוכמה, חיבור לאמת, וראייה שמעבר למה שנראה לעין.',
-    change: 'סיפורים ישנים על מי שאת "אמורה" להיות מבקשים לפנות מקום לאת הבוחרת. הזמן לפגוש את עצמך מחדש.',
-    msg: 'הזהות האמיתית שלך אינה מה שעשית, ואינה מה שאחרים רואים בך. היא מה שאת בוחרת להיות עכשיו.',
-    step: 'כתבי שלושה דברים שאת אוהבת בעצמך שאחרים אולי לא רואים. קיראי אותם בקול.'
-  }
+function startTapTimer() {
+  let secs = 0;
+  const counter = document.getElementById('emr-counter');
+  const beat = document.getElementById('tap-beat-display');
+  const beats = ['ימין...', 'שמאל...', 'ימין...', 'שמאל...'];
+  let beatIdx = 0;
+  if (state.emrInterval) clearInterval(state.emrInterval);
+  state.emrInterval = setInterval(() => {
+    secs++;
+    counter.textContent = secs;
+    beatIdx = (beatIdx + 1) % beats.length;
+    beat.textContent = beats[beatIdx];
+  }, 800);
+}
+
+// ===== EMR PHASES =====
+// Each phase: { label, passes, path(t 0→1) → {x,y} in 0→1 of track }
+const EMR_PHASES = [
+  { label: 'אופקי', passes: 6,  path: t => ({ x: t, y: 0.5 }) },
+  { label: 'אלכסון ↘', passes: 6, path: t => ({ x: t, y: t }) },
+  { label: 'אלכסון ↗', passes: 6, path: t => ({ x: t, y: 1-t }) },
+  { label: 'אופקי', passes: 6,  path: t => ({ x: t, y: 0.5 }) },
+  { label: 'אלכסון ↘', passes: 6, path: t => ({ x: t, y: t }) },
+  { label: 'אלכסון ↗', passes: 6, path: t => ({ x: t, y: 1-t }) },
+  { label: 'שמינייה ∞', passes: 12, path: t => lemniscate(t) },
 ];
 
-/* ===== DIRECTIONS ===== */
-const directions = [
-  { icon: '🌟', label: 'ביטחון' },
-  { icon: '💜', label: 'אהבה' },
-  { icon: '💫', label: 'שפע' },
-  { icon: '🌿', label: 'מנוחה' },
-  { icon: '🎨', label: 'יצירה' },
-  { icon: '🛡', label: 'גבולות' },
-  { icon: '🦋', label: 'חופש' },
-  { icon: '🔥', label: 'אומץ' },
-  { icon: '🌸', label: 'קבלה' },
-  { icon: '☀️', label: 'שמחה' },
-  { icon: '🤝', label: 'חיבור' },
-  { icon: '💚', label: 'ריפוי' }
-];
-let selectedDirs = new Set();
-
-function buildDirGrid() {
-  const grid = document.getElementById('dir-grid');
-  grid.innerHTML = '';
-  directions.forEach((d, i) => {
-    const chip = document.createElement('button');
-    chip.className = 'dir-chip' + (selectedDirs.has(i) ? ' selected' : '');
-    chip.innerHTML = `<span>${d.icon}</span>${d.label}`;
-    chip.onclick = () => toggleDir(i, chip);
-    grid.appendChild(chip);
-  });
+function lemniscate(t) {
+  const a = t * 2 * Math.PI;
+  const denom = 1 + Math.sin(a) * Math.sin(a);
+  return {
+    x: 0.5 + 0.46 * Math.cos(a) / denom,
+    y: 0.5 + 0.38 * Math.sin(a) * Math.cos(a) / denom
+  };
 }
 
-function toggleDir(i, chip) {
-  if (selectedDirs.has(i)) {
-    selectedDirs.delete(i);
-    chip.classList.remove('selected');
-  } else {
-    if (selectedDirs.size >= 3) return;
-    selectedDirs.add(i);
-    chip.classList.add('selected');
+function startEMR() {
+  state.emrRounds++;
+  state.emrCount = 0;
+  const ball    = document.getElementById('emr-ball');
+  const track   = document.getElementById('emr-track');
+  const counter = document.getElementById('emr-counter');
+  const phaseLabel = document.getElementById('emr-phase-label');
+  const BALL_R = 26; // half of 52px
+
+  let phaseIdx = 0;
+  let passIdx  = 0;
+  let dir      = 1;   // 1 = forward (t: 0→1), -1 = backward (t: 1→0)
+  let t        = 0;
+  const STEP   = 0.018; // speed
+
+  if (state.emrInterval) cancelAnimationFrame(state.emrInterval);
+
+  function updateLabel() {
+    const ph = EMR_PHASES[phaseIdx];
+    phaseLabel.textContent = ph ? ph.label + ' · מעבר ' + (passIdx+1) + '/' + ph.passes : '';
   }
-  const count = selectedDirs.size;
-  document.getElementById('dir-count').textContent = count;
-  const visual = document.getElementById('chosen-visual');
-  const btn = document.getElementById('dir-btn');
-  if (count === 3) {
-    visual.classList.add('visible');
-    btn.style.display = 'block';
-    renderChosenPaths();
-  } else {
-    visual.classList.remove('visible');
-    btn.style.display = 'none';
+  updateLabel();
+
+  function frame() {
+    if (phaseIdx >= EMR_PHASES.length) return; // done
+    const ph = EMR_PHASES[phaseIdx];
+    t += dir * STEP;
+
+    const done = dir === 1 ? t >= 1 : t <= 0;
+    if (done) {
+      t = dir === 1 ? 1 : 0;
+      state.emrCount++;
+      counter.textContent = state.emrCount;
+      passIdx++;
+      dir *= -1;
+      if (passIdx >= ph.passes) {
+        phaseIdx++;
+        passIdx = 0;
+        dir = 1;
+        t = 0;
+        if (phaseIdx >= EMR_PHASES.length) {
+          phaseLabel.textContent = 'סיום סבב מלא ✓';
+          return;
+        }
+      }
+      updateLabel();
+    }
+
+    const pos = ph.path(t);
+    const tw = track.offsetWidth;
+    const th = track.offsetHeight;
+    const bx = BALL_R + pos.x * (tw - BALL_R * 2);
+    const by = BALL_R + pos.y * (th - BALL_R * 2);
+    ball.style.left = (bx - BALL_R) + 'px';
+    ball.style.top  = (by - BALL_R) + 'px';
+
+    state.emrInterval = requestAnimationFrame(frame);
   }
+
+  state.emrInterval = requestAnimationFrame(frame);
 }
 
-function renderChosenPaths() {
-  const container = document.getElementById('chosen-paths');
-  container.innerHTML = '';
-  const colors = ['rgba(168,85,247,0.5)', 'rgba(212,175,55,0.4)', 'rgba(249,168,212,0.45)'];
-  [...selectedDirs].forEach((i, idx) => {
-    const d = directions[i];
-    const orb = document.createElement('div');
-    orb.className = 'path-orb';
-    orb.style.background = `radial-gradient(circle at 38% 38%, rgba(255,255,255,0.3), ${colors[idx]})`;
-    orb.style.boxShadow = `0 0 20px ${colors[idx]}, 0 0 40px ${colors[idx]}`;
-    orb.innerHTML = `<span style="font-size:24px">${d.icon}</span>`;
-    container.appendChild(orb);
+function startVideo() {
+  const v = document.getElementById('intro-video');
+  const overlay = document.getElementById('video-start-overlay');
+  overlay.style.display = 'none';
+  v.play();
+}
+
+function toggleSub(btn, group) {
+  btn.closest('.submod-opts').querySelectorAll('.submod-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function stopEMR() {
+  if (state.emrInterval) { cancelAnimationFrame(state.emrInterval); state.emrInterval = null; }
+  const prevScore = state.rating2 || state.rating1;
+  document.getElementById('prev-score-display').textContent = prevScore;
+  document.getElementById('continue-emr-section').style.display = 'none';
+  document.getElementById('proceed-section').style.display = 'none';
+  document.getElementById('check-rate-btn').style.display = 'none';
+  // Reset rating2 selection
+  document.getElementById('rating2-row').querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+  state.rating2 = null;
+  document.getElementById('check-desc').value = '';
+  goTo('page-check', 5);
+}
+
+function continueEMR() {
+  state.rating1 = state.rating2; // update baseline
+  document.getElementById('emr-start-score').textContent = state.rating1;
+  goTo('emr-page', 4);
+  startEMR();
+}
+
+// ===== FINAL MAP =====
+function goToFinalMap() {
+  // Build map-container-2
+  const c2 = document.getElementById('map-container-2');
+  c2.id = 'map-container-2';
+  c2.className = 'map-container';
+  c2.style.cssText = document.getElementById('map-container').style.cssText;
+  c2.style.position = 'relative';
+  c2.style.width = '100%';
+  c2.style.maxWidth = '600px';
+  c2.style.margin = '0 auto';
+  c2.style.aspectRatio = '1';
+  c2.style.background = 'radial-gradient(ellipse at center, #1a0535 0%, #04020f 70%)';
+  c2.style.border = '2px solid rgba(168,85,247,0.3)';
+  c2.style.borderRadius = '50%';
+  c2.style.overflow = 'visible';
+  c2.style.touchAction = 'none';
+
+  renderMap('map-container-2');
+
+  document.getElementById('final-start-score').textContent = state.rating1;
+  document.getElementById('final-mid-score').textContent = state.rating2 || state.rating1;
+  goTo('page-final', 6);
+}
+
+// ===== ENERGY =====
+function selectRepForEnergy(index, el) {
+  document.querySelectorAll('#map-container-2 .rep-tag').forEach(t => t.classList.remove('selected-rep-highlight'));
+  state.selectedRepForEnergy = index;
+  el.classList.add('selected-rep-highlight');
+  document.getElementById('energy-feedback').textContent = '"' + state.reps[index].text + '" נבחר';
+}
+
+function sendEnergy(type) {
+  if (state.selectedRepForEnergy === null) {
+    document.getElementById('energy-feedback').textContent = '← לחצ/י קודם על יצוג במפה';
+    return;
+  }
+  const rep = state.reps[state.selectedRepForEnergy];
+  const tag = document.querySelector('#map-container-2 .rep-tag[data-index="' + state.selectedRepForEnergy + '"]');
+  if (tag) {
+    tag.classList.remove('glowing');
+    void tag.offsetWidth;
+    tag.classList.add('glowing');
+    setTimeout(() => tag.classList.remove('glowing'), 3100);
+  }
+  state.energiesSent.push(type);
+  state.energizedReps.add(state.selectedRepForEnergy);
+  document.getElementById('energy-feedback').textContent = '✨ שלחת ' + type + ' אל "' + rep.text + '"';
+}
+
+// ===== FINAL RESULT =====
+function showFinalResult() {
+  if (!state.rating3) {
+    const err = document.getElementById('final-err');
+    if (err) { err.style.display = 'block'; err.scrollIntoView({behavior:'smooth'}); }
+    return;
+  }
+  const err = document.getElementById('final-err');
+  if (err) err.style.display = 'none';
+  const start = state.rating1;
+  const end = state.rating3;
+  const diff = start - end;
+
+  document.getElementById('result-start').textContent = start;
+  document.getElementById('result-end').textContent = end;
+
+  let changeText = '', msg = '';
+  if (diff >= 5) {
+    changeText = '🌟 ירידה מרשימה של ' + diff + ' נקודות!';
+    msg = 'עשית עבודה עמוקה ואמיתית. מפת העולם שלך עברה שינוי משמעותי. הנה מקומך לנשום, לקבל ולהמשיך בתהליך. הגוף, הנפש והנשמה שלך קלטו את האנרגיות החדשות. 💜';
+  } else if (diff >= 2) {
+    changeText = '✨ ירידה של ' + diff + ' נקודות. יפה!';
+    msg = 'יש תנועה! הגוף והנפש מגיבים. האנרגיות שנשלחו כבר עובדות בשבילך. אפשר להמשיך ולעמיק.';
+  } else if (diff > 0) {
+    changeText = 'ירידה קטנה של ' + diff + ' נקודה/ות';
+    msg = 'גם שינוי קטן הוא שינוי. הגוף לוקח לפעמים זמן לקלוט את האנרגיות החדשות. כדאי לנוח ולחזור.';
+  } else {
+    changeText = 'נשאר באותו מקום';
+    msg = 'לפעמים הנושא דורש זמן ועיבוד נוסף. זה בסדר. כל תחילה קשה. האנרגיות נשלחו, הן עובדות.';
+  }
+
+  document.getElementById('result-change').textContent = changeText;
+  document.getElementById('result-message').textContent = msg;
+
+  // Energies sent
+  const energyList = document.getElementById('result-energies-list');
+  energyList.innerHTML = '';
+  if (state.energiesSent && state.energiesSent.length > 0) {
+    const unique = [...new Set(state.energiesSent)];
+    unique.forEach(e => {
+      const el = document.createElement('span');
+      el.style.cssText = 'padding:6px 14px; border-radius:20px; background:rgba(168,85,247,0.25); border:1px solid rgba(168,85,247,0.5); color:#e9d5ff; font-size:0.9rem; font-weight:700;';
+      el.textContent = e;
+      energyList.appendChild(el);
+    });
+  } else {
+    energyList.innerHTML = '<span style="color:#9ca3af; font-size:0.85rem;">לא נשלחו אנרגיות בסבב זה</span>';
+  }
+
+  // Feeling text
+  const feelDesc = document.getElementById('check-desc') ? document.getElementById('check-desc').value.trim() : '';
+  document.getElementById('result-feeling-text').textContent = feelDesc || 'המפה עודכנה לאחר הכיול.';
+
+  // Draw final map
+  const resCont = document.getElementById('result-map-container');
+  resCont.innerHTML = '';
+  const cp = document.createElement('div');
+  cp.className = 'center-person';
+  const nameVal = document.getElementById('center-name') ? document.getElementById('center-name').value.trim() : '';
+  cp.innerHTML = '<div style="font-size:0.85rem;font-weight:900;color:#ffe88a;">אני</div>' +
+    (nameVal ? '<div style="font-size:0.75rem;color:#e9d5ff;">'+nameVal+'</div>' : '');
+  resCont.appendChild(cp);
+  ['12','3','6','9'].forEach((n,i) => {
+    const pos = ['top:6%;left:50%;transform:translateX(-50%)','right:6%;top:50%;transform:translateY(-50%)','bottom:6%;left:50%;transform:translateX(-50%)','left:6%;top:50%;transform:translateY(-50%)'][i];
+    const d = document.createElement('div'); d.className='clock-num'; d.textContent=n; d.style.cssText=pos; resCont.appendChild(d);
   });
+
+  // Render reps with glow if they received energy
+  syncReps();
+  state.reps.forEach((rep, i) => {
+    const tag = document.createElement('div');
+    tag.className = 'rep-tag ' + rep.cls;
+    tag.textContent = rep.text;
+    tag.style.left = (rep.x * 100) + '%';
+    tag.style.top  = (rep.y * 100) + '%';
+    tag.style.transform = 'translate(-50%,-50%)';
+    const wasEnergized = state.energizedReps && state.energizedReps.has(i);
+    if (wasEnergized) {
+      tag.style.boxShadow = '0 0 16px rgba(255,232,138,0.8), 0 0 30px rgba(168,85,247,0.5)';
+      tag.style.border = '2px solid rgba(255,232,138,0.7)';
+    }
+    resCont.appendChild(tag);
+  });
+
+  goTo('page-results', 7);
 }
 
-buildDirGrid();
+function saveReport() {
+  const nameVal = (document.getElementById('center-name') || {}).value || '';
+  const today = new Date().toLocaleDateString('he-IL');
+  const start = state.rating1 || '?';
+  const end   = state.rating3 || '?';
+  const diff  = (start - end);
+  const feelDesc   = (document.getElementById('check-desc')    || {}).value || '';
+  const insight    = (document.getElementById('check-insight')  || {}).value || '';
+  const bodyPlace  = (document.getElementById('feeling1-body')  || {}).value || '';
+  const energies = state.energiesSent.length ? [...new Set(state.energiesSent)].join(', ') : 'לא נשלחו';
 
-/* ===== NAVIGATION ===== */
-const navScreens = ['s2', 's4', 's5', 's6'];
+  const repsHTML = state.reps.map(r => {
+    const energized = state.energizedReps && state.energizedReps.has(state.reps.indexOf(r));
+    return '<li style="margin-bottom:6px;">' +
+      '<span style="background:' + colorForCls(r.cls) + '; padding:3px 10px; border-radius:12px; font-size:0.85rem; margin-left:6px;">' + r.text + '</span>' +
+      (energized ? ' ✨' : '') + '</li>';
+  }).join('');
 
-function goTo(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.getElementById(id).scrollTop = 0;
+  const html = `<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>מפת העולם שלי – ${nameVal || 'ללא שם'} – ${today}</title>
+<style>
+  body { font-family: Arial, sans-serif; background:#04020f; color:#e9d5ff; max-width:700px; margin:40px auto; padding:24px; direction:rtl; }
+  h1 { color:#ffe88a; text-align:center; font-size:1.8rem; margin-bottom:4px; }
+  .date { text-align:center; color:#9ca3af; margin-bottom:28px; }
+  .card { background:rgba(30,10,60,0.9); border:1px solid rgba(168,85,247,0.3); border-radius:14px; padding:18px; margin-bottom:18px; }
+  h2 { color:#c084fc; font-size:1.1rem; margin-bottom:10px; }
+  .score-row { display:flex; gap:16px; }
+  .score-box { flex:1; text-align:center; }
+  .score-num { font-size:2.5rem; font-weight:900; }
+  ul { padding-right:16px; }
+  .footer { text-align:center; color:#6b7280; font-size:0.8rem; margin-top:30px; }
+</style>
+</head>
+<body>
+<h1>🌟 מפת העולם שלי</h1>
+<div class="date">${nameVal ? nameVal + ' | ' : ''}${today}</div>
 
-  const showNav = navScreens.includes(id);
-  document.getElementById('nav-bar').style.display = showNav ? 'flex' : 'none';
+<div class="card">
+  <h2>📊 שינוי עוצמה</h2>
+  <div class="score-row">
+    <div class="score-box">
+      <div style="color:#9ca3af;font-size:0.85rem;">התחלה</div>
+      <div class="score-num" style="color:#f87171;">${start}</div>
+    </div>
+    <div style="font-size:1.5rem;color:#9ca3af;align-self:center;">←</div>
+    <div class="score-box">
+      <div style="color:#9ca3af;font-size:0.85rem;">סיום</div>
+      <div class="score-num" style="color:#4ade80;">${end}</div>
+    </div>
+  </div>
+  ${diff > 0 ? '<div style="text-align:center;color:#4ade80;font-weight:700;margin-top:10px;">ירידה של ' + diff + ' נקודות ✨</div>' : ''}
+</div>
 
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const navEl = document.getElementById('nav-' + id);
-  if (navEl) navEl.classList.add('active');
+<div class="card">
+  <h2>💫 אנרגיות שנשלחו</h2>
+  <p>${energies}</p>
+</div>
+
+<div class="card">
+  <h2>🗺️ יצוגי המפה</h2>
+  <ul>${repsHTML}</ul>
+</div>
+
+${bodyPlace ? '<div class="card"><h2>🫀 מיקום ההרגשה בגוף</h2><p>' + bodyPlace + '</p></div>' : ''}
+${feelDesc  ? '<div class="card"><h2>💜 ההרגשה אחרי הכיול</h2><p>' + feelDesc + '</p></div>' : ''}
+${insight   ? '<div class="card"><h2>✨ תובנה חדשה שנכנסה</h2><p>' + insight + '</p></div>' : ''}
+
+<div class="footer">נוצר עם כלי מפת העולם | bronia-future-map.pages.dev</div>
+</body>
+</html>`;
+
+  const blob = new Blob([html], { type: 'text/html; charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = 'מפת-העולם-שלי-' + today.replace(/\//g,'-') + '.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
-/* ===== OPEN DOMAIN ===== */
-function openDomain(i) {
-  const d = domains[i];
-  document.getElementById('dc-icon').textContent = d.icon;
-  document.getElementById('dc-title').textContent = d.title;
-  document.getElementById('dc-now').textContent = d.now;
-  document.getElementById('dc-change').textContent = d.change;
-  document.getElementById('dc-msg').textContent = d.msg;
-  document.getElementById('dc-step').textContent = d.step;
-  goTo('s3');
+function colorForCls(cls) {
+  const map = {
+    belief:'rgba(248,113,113,0.85)', strength:'rgba(74,222,128,0.85)',
+    'good-at':'rgba(96,165,250,0.85)', 'less-good':'rgba(251,146,60,0.85)',
+    emotion:'rgba(232,121,249,0.85)', thought:'rgba(250,204,21,0.85)',
+    'person-pos':'rgba(45,212,191,0.85)', 'person-neg':'rgba(239,68,68,0.9)',
+    family:'rgba(129,140,248,0.85)'
+  };
+  return map[cls] || '#6b7280';
 }
 
-/* ===== STEP CHECK ===== */
-function toggleCheck(el) {
-  el.classList.toggle('done');
+function startOver() {
+  state.reps = [];
+  state.rating1 = null;
+  state.rating2 = null;
+  state.rating3 = null;
+  state.selectedRepForEnergy = null;
+  state.energiesSent = [];
+  state.energizedReps = new Set();
+  state.emrRounds = 0;
+  if (state.emrInterval) { cancelAnimationFrame(state.emrInterval); state.emrInterval = null; }
+  document.querySelectorAll('textarea').forEach(t => t.value = '');
+  goTo('page-input', 1);
 }
 </script>
 </body>
