@@ -501,6 +501,57 @@ textarea { min-height: 80px; }
   </div>
 </div>
 
+<!-- PAGE DESTINY: מפת גורל -->
+<div class="page" id="page-destiny" style="background:linear-gradient(160deg,#0d0520,#1a0535,#04020f); min-height:100vh; padding:24px 16px 60px;">
+  <div style="max-width:640px; margin:0 auto; text-align:center;">
+
+    <!-- Loading state -->
+    <div id="destiny-loading" style="padding:60px 0;">
+      <div style="font-size:3rem; margin-bottom:20px; animation:pulse 1.5s infinite;">✨</div>
+      <div style="color:#d4af37; font-family:Heebo,sans-serif; font-size:1.3rem; font-weight:700; margin-bottom:8px;">מייצרת את מפת הגורל שלך...</div>
+      <div style="color:#c4b5fd; font-size:0.95rem;">ברוניה קוראת את האנרגיות שלך</div>
+    </div>
+
+    <!-- Result state -->
+    <div id="destiny-result" style="display:none;">
+
+      <!-- Wheel -->
+      <div style="margin-bottom:28px;">
+        <canvas id="destiny-wheel" width="300" height="300" style="max-width:300px; width:100%;"></canvas>
+      </div>
+
+      <!-- Analysis text -->
+      <div id="destiny-part1" style="background:rgba(168,85,247,0.08); border:1px solid rgba(168,85,247,0.3); border-radius:16px; padding:20px; margin-bottom:16px; text-align:right;">
+        <div style="color:#d4af37; font-size:0.8rem; font-weight:700; margin-bottom:10px; letter-spacing:1px;">מפת העולם הנוכחית שלך</div>
+        <div id="destiny-part1-text" style="color:#e9d5ff; font-size:1rem; line-height:1.9; font-family:Heebo,sans-serif;"></div>
+      </div>
+
+      <div id="destiny-part2" style="background:rgba(248,113,113,0.06); border:1px solid rgba(248,113,113,0.25); border-radius:16px; padding:20px; margin-bottom:16px; text-align:right;">
+        <div style="color:#f87171; font-size:0.8rem; font-weight:700; margin-bottom:10px; letter-spacing:1px;">הצל שמחכה לשחרור</div>
+        <div id="destiny-part2-text" style="color:#e9d5ff; font-size:1rem; line-height:1.9; font-family:Heebo,sans-serif;"></div>
+      </div>
+
+      <div id="destiny-part3" style="background:rgba(212,175,55,0.08); border:1px solid rgba(212,175,55,0.35); border-radius:16px; padding:20px; margin-bottom:28px; text-align:right;">
+        <div style="color:#d4af37; font-size:0.8rem; font-weight:700; margin-bottom:10px; letter-spacing:1px;">✨ תחזית מפת הגורל — 12 החודשים הקרובים</div>
+        <div id="destiny-part3-text" style="color:#ffe88a; font-size:1.05rem; line-height:1.9; font-family:Heebo,sans-serif;"></div>
+      </div>
+
+      <button class="btn btn-gold" style="width:100%; max-width:400px;" onclick="goTo('page-map',2)">← המשיכי לעבודה המפה שלי</button>
+    </div>
+
+    <!-- Error state -->
+    <div id="destiny-error" style="display:none; color:#f87171; padding:30px;">
+      <div style="font-size:1.1rem; margin-bottom:12px;">לא הצלחנו לייצר את מפת הגורל</div>
+      <button class="btn btn-primary" onclick="goTo('page-map',2)">המשיכי בלי מפת גורל →</button>
+    </div>
+
+  </div>
+</div>
+
+<style>
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+</style>
+
 <!-- PAGE 2: MAP -->
 <div class="page" id="page-map">
   <div style="max-width:680px; margin:0 auto;">
@@ -1150,7 +1201,129 @@ function updateProgress(pageId, dotIndex) {
 
 // ===== PAGE 1 → PAGE 2 =====
 function goToMap() {
-  goTo('page-map', 2);
+  goTo('page-destiny', 2);
+  generateDestiny();
+}
+
+function parseDestinyParts(text) {
+  const parts = { part1: '', part2: '', part3: '' };
+  const p1 = text.match(/חלק\s*1[^:：\n]*[:\n]([\s\S]*?)(?=חלק\s*2|$)/i);
+  const p2 = text.match(/חלק\s*2[^:：\n]*[:\n]([\s\S]*?)(?=חלק\s*3|$)/i);
+  const p3 = text.match(/חלק\s*3[^:：\n]*[:\n]([\s\S]*?)$/i);
+  if (p1) parts.part1 = p1[1].trim();
+  if (p2) parts.part2 = p2[1].trim();
+  if (p3) parts.part3 = p3[1].trim();
+  if (!parts.part1 && !parts.part2 && !parts.part3) parts.part1 = text.trim();
+  return parts;
+}
+
+function drawDestinyWheel(data) {
+  const canvas = document.getElementById('destiny-wheel');
+  const ctx = canvas.getContext('2d');
+  const cx = 150, cy = 150, R = 120;
+  const segments = [
+    { label: 'כסף', value: data.money || 5, color: '#d4af37' },
+    { label: 'בריאות', value: data.health || 5, color: '#4ade80' },
+    { label: 'ביטחון', value: data.confidence || 5, color: '#a855f7' },
+    { label: 'ערך', value: data.value || 5, color: '#f472b6' },
+    { label: 'דימוי', value: data.image || 5, color: '#60a5fa' },
+    { label: 'סיפוק', value: data.satisfaction || 5, color: '#fb923c' },
+  ];
+  const count = segments.length;
+  const angleStep = (Math.PI * 2) / count;
+
+  ctx.clearRect(0, 0, 300, 300);
+
+  // Background circle
+  ctx.beginPath();
+  ctx.arc(cx, cy, R + 10, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(26,5,53,0.9)';
+  ctx.fill();
+
+  // Grid rings
+  [0.25, 0.5, 0.75, 1].forEach(ratio => {
+    ctx.beginPath();
+    ctx.arc(cx, cy, R * ratio, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(168,85,247,0.15)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  });
+
+  // Spokes
+  segments.forEach((_, i) => {
+    const angle = angleStep * i - Math.PI / 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + Math.cos(angle) * R, cy + Math.sin(angle) * R);
+    ctx.strokeStyle = 'rgba(168,85,247,0.2)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  });
+
+  // Filled polygon
+  ctx.beginPath();
+  segments.forEach((seg, i) => {
+    const angle = angleStep * i - Math.PI / 2;
+    const r = R * (seg.value / 10);
+    const x = cx + Math.cos(angle) * r;
+    const y = cy + Math.sin(angle) * r;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(168,85,247,0.25)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(212,175,55,0.7)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Dots and labels
+  segments.forEach((seg, i) => {
+    const angle = angleStep * i - Math.PI / 2;
+    const r = R * (seg.value / 10);
+    const x = cx + Math.cos(angle) * r;
+    const y = cy + Math.sin(angle) * r;
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, Math.PI * 2);
+    ctx.fillStyle = seg.color;
+    ctx.fill();
+
+    const lx = cx + Math.cos(angle) * (R + 22);
+    const ly = cy + Math.sin(angle) * (R + 22);
+    ctx.fillStyle = '#e9d5ff';
+    ctx.font = 'bold 11px Heebo, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(seg.label, lx, ly);
+  });
+}
+
+async function generateDestiny() {
+  document.getElementById('destiny-loading').style.display = 'block';
+  document.getElementById('destiny-result').style.display = 'none';
+  document.getElementById('destiny-error').style.display = 'none';
+
+  try {
+    const res = await fetch('/api/destiny', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(qData),
+    });
+    const data = await res.json();
+    if (!data.analysis) throw new Error('no analysis');
+
+    const parts = parseDestinyParts(data.analysis);
+    document.getElementById('destiny-part1-text').textContent = parts.part1;
+    document.getElementById('destiny-part2-text').textContent = parts.part2;
+    document.getElementById('destiny-part3-text').textContent = parts.part3;
+
+    drawDestinyWheel(qData);
+
+    document.getElementById('destiny-loading').style.display = 'none';
+    document.getElementById('destiny-result').style.display = 'block';
+  } catch (e) {
+    document.getElementById('destiny-loading').style.display = 'none';
+    document.getElementById('destiny-error').style.display = 'block';
+  }
 }
 
 let cardCounter = 0;
